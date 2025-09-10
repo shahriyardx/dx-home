@@ -4,6 +4,9 @@ import path from "path"
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
+	manifest: {
+		name: "DxHome"
+	},
 	modules: ["@wxt-dev/module-react"],
 	vite: () => ({
 		plugins: [tailwindcss()],
