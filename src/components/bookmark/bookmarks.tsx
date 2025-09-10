@@ -1,6 +1,5 @@
-import React from "react"
 import { Button } from "@/components/ui/button"
-import { Bookmark, db } from "@/lib/db"
+import { type Bookmark, db } from "@/lib/db"
 import { useLiveQuery } from "dexie-react-hooks"
 import { PenIcon, PlusIcon, Trash2Icon } from "lucide-react"
 import { BookmarkDialog } from "@/components/bookmark/bookmark-dialog"
@@ -18,7 +17,7 @@ const Bookmarks = () => {
 	return (
 		<div className="flex flex-wrap items-center gap-4">
 			{bookmarks.map((bookmark) => (
-				<SingleBookmark bookmark={bookmark} />
+				<SingleBookmark key={bookmark.id} bookmark={bookmark} />
 			))}
 			<BookmarkDialog>
 				<div className="flex flex-col gap-1 items-center">

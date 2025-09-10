@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react"
 
 const Clock = () => {
+	const [clockOnly, setClockOnly] = useState(false)
+
 	const [currentTime, setCurrentTime] = useState(new Date())
 
 	useEffect(() => {
@@ -11,7 +14,7 @@ const Clock = () => {
 		return () => clearInterval(timerId)
 	}, [])
 
-	const formatTime = (date: Date) => {
+	const formatTime = (date: Date, showSeconds: boolean = false) => {
 		let hours = date.getHours()
 		const minutes = date.getMinutes()
 		const ampm = hours >= 12 ? "PM" : "AM"
@@ -19,7 +22,8 @@ const Clock = () => {
 		hours = hours ? hours : 12
 		const hoursFormatted = hours < 10 ? `0${hours}` : hours
 		const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes
-		return `${hoursFormatted}:${formattedMinutes} ${ampm}`
+		const seconds = showSeconds ? `:${date.getSeconds()}` : ""
+		return `${hoursFormatted}:${formattedMinutes}${seconds} ${ampm}`
 	}
 
 	const formatDate = (date: Date) => {
@@ -32,8 +36,17 @@ const Clock = () => {
 	}
 
 	return (
-		<div>
-			<h1 className="text-9xl font-bold">{formatTime(currentTime)}</h1>
+		<div
+			onClick={() => setClockOnly((val) => !val)}
+			className={cn(
+				"cursor-pointer select-none",
+				clockOnly &&
+					"flex flex-col justify-center items-center fixed top-0 left-0 w-full h-screen bg-background",
+			)}
+		>
+			<h1 className="text-9xl font-bold">
+				{formatTime(currentTime, clockOnly)}
+			</h1>
 			<h2 className="text-lg text-gray-500 font-semibold">
 				{formatDate(currentTime)}
 			</h2>
