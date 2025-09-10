@@ -23,7 +23,7 @@ const Clock = () => {
 		const hoursFormatted = hours < 10 ? `0${hours}` : hours
 		const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes
 		const seconds = showSeconds ? `:${date.getSeconds()}` : ""
-		return `${hoursFormatted}:${formattedMinutes}${seconds} ${ampm}`
+		return `${hoursFormatted}:${formattedMinutes}${seconds} ${clockOnly ? '' : ampm}`
 	}
 
 	const formatDate = (date: Date) => {
@@ -44,12 +44,14 @@ const Clock = () => {
 					"flex flex-col justify-center items-center fixed top-0 left-0 w-full h-screen bg-background",
 			)}
 		>
-			<h1 className="text-9xl font-bold">
+			<h1 className={cn("text-9xl font-bold", clockOnly && "text-[10rem]")}>
 				{formatTime(currentTime, clockOnly)}
 			</h1>
-			<h2 className="text-lg text-gray-500 font-semibold">
-				{formatDate(currentTime)}
-			</h2>
+			{!clockOnly && (
+				<h2 className="text-lg text-gray-500 font-semibold">
+					{formatDate(currentTime)}
+				</h2>
+			)}
 		</div>
 	)
 }
