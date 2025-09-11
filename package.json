@@ -2,6 +2,10 @@
 	"name": "dx-home",
 	"description": "Minimal newtab ui screen for your browser",
 	"private": true,
+	"author": {
+		"email": "contact@shahriyar.dev",
+		"name": "Md Shahriyar Alam"
+	},
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
