@@ -1,9 +1,8 @@
+import { PlusIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { type Bookmark, db } from "@/lib/db"
 import { useLiveQuery } from "dexie-react-hooks"
-import { PlusIcon } from "lucide-react"
 import { BookmarkDialog } from "@/components/bookmark/bookmark-dialog"
-
 import SingleBookmark from "./single-bookmark"
 
 const Bookmarks = () => {

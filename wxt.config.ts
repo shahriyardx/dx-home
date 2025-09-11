@@ -1,6 +1,6 @@
 import { defineConfig } from "wxt"
 import tailwindcss from "@tailwindcss/vite"
-import path from "path"
+import path from "node:path"
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
