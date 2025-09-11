@@ -23,7 +23,7 @@ const Clock = () => {
 		const hoursFormatted = hours < 10 ? `0${hours}` : hours
 		const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes
 		const seconds = showSeconds ? `:${date.getSeconds()}` : ""
-		return `${hoursFormatted}:${formattedMinutes}${seconds} ${clockOnly ? '' : ampm}`
+		return `${hoursFormatted}:${formattedMinutes}${seconds} ${clockOnly ? "" : ampm}`
 	}
 
 	const formatDate = (date: Date) => {

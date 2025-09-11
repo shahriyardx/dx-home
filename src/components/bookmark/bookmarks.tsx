@@ -5,7 +5,7 @@ import { PenIcon, PlusIcon, Trash2Icon } from "lucide-react"
 import {
 	BookmarkDialog,
 	bookmarkSchema,
-	BookmarkType,
+	type BookmarkType,
 } from "@/components/bookmark/bookmark-dialog"
 import {
 	ContextMenu,
