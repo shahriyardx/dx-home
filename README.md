@@ -1,3 +1,3 @@
-# WXT + React
+# DxHome
 
-This template should help get you started developing with React in WXT.
+Minimal newtab ui screen for your browser

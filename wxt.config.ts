@@ -5,7 +5,8 @@ import path from "path"
 // See https://wxt.dev/api/config.html
 export default defineConfig({
 	manifest: {
-		name: "DxHome"
+		name: "DxHome",
+		description: "Minimal newtab ui screen for your browser",
 	},
 	modules: ["@wxt-dev/module-react"],
 	vite: () => ({

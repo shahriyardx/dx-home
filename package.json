@@ -1,6 +1,6 @@
 {
 	"name": "dx-home",
-	"description": "Minimal home screen for your browser",
+	"description": "Minimal newtab ui screen for your browser",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
