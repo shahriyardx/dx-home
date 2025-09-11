@@ -11,22 +11,15 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { DialogProps } from "@radix-ui/react-dialog"
 import { useForm } from "react-hook-form"
-import z from "zod"
 import { type Bookmark, db } from "@/lib/db"
 import BookmarkForm from "./bookmark-form"
-
-export const bookmarkSchema = z.object({
-	label: z.string().min(1),
-	url: z.url(),
-})
-
-export type BookmarkType = z.infer<typeof bookmarkSchema>
+import { bookmarkSchema, type BookmarkType } from "."
 
 export function BookmarkDialog({
 	children,
 	initialValues,
 }: DialogProps & { initialValues?: Bookmark }) {
-	const form = useForm<z.infer<typeof bookmarkSchema>>({
+	const form = useForm<BookmarkType>({
 		resolver: zodResolver(bookmarkSchema),
 		defaultValues: initialValues || {
 			label: "",
@@ -34,7 +27,7 @@ export function BookmarkDialog({
 		},
 	})
 
-	const handleSubmit = async (values: z.infer<typeof bookmarkSchema>) => {
+	const handleSubmit = async (values: BookmarkType) => {
 		if (initialValues) {
 			await db.bookmarks.update(initialValues.id, values)
 		} else {

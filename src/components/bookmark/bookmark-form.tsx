@@ -8,7 +8,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form"
 import type { UseFormReturn } from "react-hook-form"
-import type { BookmarkType } from "./bookmark-dialog"
+import type { BookmarkType } from "."
 
 const BookmarkForm = ({
 	form,
