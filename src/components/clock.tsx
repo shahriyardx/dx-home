@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 
 const Clock = () => {
 	const [clockOnly, setClockOnly] = useState(false)
-
+	const settings = useSettings()
 	const [currentTime, setCurrentTime] = useState(new Date())
 
 	useEffect(() => {
@@ -41,14 +41,15 @@ const Clock = () => {
 			className={cn(
 				"cursor-pointer select-none",
 				clockOnly &&
-					"flex flex-col justify-center items-center fixed top-0 left-0 w-full h-screen bg-background",
+					"flex flex-col justify-center items-center fixed top-0 left-0 w-full h-screen",
 			)}
+			style={clockOnly ? { background: settings.background } : {}}
 		>
 			<h1 className={cn("text-9xl font-bold", clockOnly && "text-[10rem]")}>
 				{formatTime(currentTime, clockOnly)}
 			</h1>
 			{!clockOnly && (
-				<h2 className="text-lg text-gray-500 font-semibold">
+				<h2 className="text-lg text-primary/50 font-semibold">
 					{formatDate(currentTime)}
 				</h2>
 			)}

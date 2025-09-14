@@ -18,7 +18,6 @@ const Bookmarks = () => {
 				<div className="flex flex-col gap-1 items-center">
 					<Button
 						size="icon"
-						variant="outline"
 						className="rounded-full w-10 h-10 p-3 cursor-pointer"
 						asChild
 					>
