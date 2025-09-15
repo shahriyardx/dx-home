@@ -9,7 +9,7 @@ interface Bookmark {
 
 interface Settings {
 	key: "main"
-	background: string,
+	background: string
 }
 
 const db = new Dexie("dx-database") as Dexie & {
@@ -19,11 +19,23 @@ const db = new Dexie("dx-database") as Dexie & {
 
 db.version(1).stores({
 	bookmarks: "++id, label, url",
+	settings: "key",
 })
 
-db.version(2).stores({
-	bookmarks: "++id, label, url",
-	settings: "key"
+db.on("populate", () => {
+	db.bookmarks.bulkAdd([
+		{ label: "YouTube", url: "https://youtube.com" },
+		{ label: "GitHub", url: "https://github.com" },
+		{ label: "Netflix", url: "https://netflix.com" },
+		{ label: "Facebook", url: "https://facebook.com" },
+		{ label: "Twitter", url: "https://x.com" },
+	])
+
+	db.settings.put({
+		key: "main",
+		background: "linear-gradient(135deg, rgb(0, 0, 0), rgb(67, 67, 67))",
+	})
 })
+
 export type { Bookmark }
 export { db }

@@ -11,29 +11,23 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { DialogProps } from "@radix-ui/react-dialog"
 import { useForm } from "react-hook-form"
-import { type Bookmark, db } from "@/lib/db"
 import BookmarkForm from "./bookmark-form"
 import { bookmarkSchema, type BookmarkType } from "."
+import { useBookmarks } from "@/hooks/useBookmarks"
 
-export function BookmarkDialog({
-	children,
-	initialValues,
-}: DialogProps & { initialValues?: Bookmark }) {
+export function BookmarkDialog({ children }: DialogProps) {
 	const form = useForm<BookmarkType>({
 		resolver: zodResolver(bookmarkSchema),
-		defaultValues: initialValues || {
+		defaultValues: {
 			label: "",
 			url: "https://",
 		},
 	})
 
-	const handleSubmit = async (values: BookmarkType) => {
-		if (initialValues) {
-			await db.bookmarks.update(initialValues.id, values)
-		} else {
-			await db.bookmarks.add(values)
-		}
+	const { addBookmark } = useBookmarks()
 
+	const handleSubmit = async (values: BookmarkType) => {
+		await addBookmark(values)
 		form.reset({ label: "", url: "https://" })
 	}
 

@@ -1,13 +1,11 @@
 import { PlusIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { type Bookmark, db } from "@/lib/db"
-import { useLiveQuery } from "dexie-react-hooks"
 import { BookmarkDialog } from "@/components/bookmark/bookmark-dialog"
 import SingleBookmark from "./single-bookmark"
+import { useBookmarks } from "@/hooks/useBookmarks"
 
 const Bookmarks = () => {
-	const bookmarks =
-		useLiveQuery(() => db.bookmarks.toArray()) || ([] as Bookmark[])
+	const { bookmarks } = useBookmarks()
 
 	return (
 		<div className="flex flex-wrap items-center gap-4">

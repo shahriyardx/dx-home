@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { type Bookmark, db } from "@/lib/db"
+import type { Bookmark } from "@/lib/db"
 import { PenIcon, Trash2Icon } from "lucide-react"
 import {
 	ContextMenu,
@@ -19,17 +19,21 @@ import {
 } from "../ui/dialog"
 import BookmarkForm from "./bookmark-form"
 import { bookmarkSchema, type BookmarkType } from "."
+import { useBookmarks } from "@/hooks/useBookmarks"
 
 const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 	const [open, setOpen] = useState(false)
+	const { deleteBookmark, updateBookmark } = useBookmarks()
+
 	const url = new URL(bookmark.url)
+
 	const form = useForm({
 		resolver: zodResolver(bookmarkSchema),
 		defaultValues: bookmark,
 	})
 
 	const handleSubmit = async (values: BookmarkType) => {
-		await db.bookmarks.update(bookmark.id, values)
+		await updateBookmark(bookmark.id, values)
 		setOpen(false)
 	}
 
@@ -57,7 +61,7 @@ const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 					<ContextMenuItem onSelect={() => setOpen(true)}>
 						<PenIcon /> Edit
 					</ContextMenuItem>
-					<ContextMenuItem onClick={() => db.bookmarks.delete(bookmark.id)}>
+					<ContextMenuItem onClick={() => deleteBookmark(bookmark.id)}>
 						<Trash2Icon /> Delete
 					</ContextMenuItem>
 				</ContextMenuContent>
