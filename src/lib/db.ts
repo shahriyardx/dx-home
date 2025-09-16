@@ -23,13 +23,14 @@ db.version(1).stores({
 })
 
 db.on("populate", () => {
-	db.bookmarks.bulkAdd([
-		{ label: "YouTube", url: "https://youtube.com" },
-		{ label: "GitHub", url: "https://github.com" },
-		{ label: "Netflix", url: "https://netflix.com" },
-		{ label: "Facebook", url: "https://facebook.com" },
-		{ label: "Twitter", url: "https://x.com" },
-	])
+	chrome.topSites.get((sites) => {
+		const bookmarks = sites.map((site) => ({
+			label: site.title,
+			url: site.url,
+		}))
+
+		db.bookmarks.bulkAdd(bookmarks)
+	})
 
 	db.settings.put({
 		key: "main",

@@ -54,7 +54,11 @@ const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 							</a>
 						</Button>
 
-						<p>{bookmark.label}</p>
+						{bookmark.label.split(" ").length === 1 ? (
+							<p>{bookmark.label}</p>
+						) : (
+							<p className="max-w-[8ch] truncate">{bookmark.label}</p>
+						)}
 					</div>
 				</ContextMenuTrigger>
 				<ContextMenuContent>
