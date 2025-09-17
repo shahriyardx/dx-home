@@ -41,7 +41,6 @@ export default defineBackground(() => {
 	}
 
 	chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-		console.log(msg)
 		if (msg.type === "schedule-task") {
 			scheduleTaskNotification(msg.task as Task)
 		}
@@ -59,43 +58,38 @@ export default defineBackground(() => {
 		}
 
 		if (msg.type === "getRecentlyClosed") {
-			chrome.sessions.getRecentlyClosed({ maxResults: 10 }, (sessions) => {
-				const recentTabs = sessions.reduce<Array<Tab>>((prev, curr) => {
-					const prevTabs = prev
-					const curTabs = curr.tab
-						? [curr.tab]
-						: curr.window
-							? curr.window.tabs || []
-							: []
-
-					return [
-						...prevTabs,
-						...curTabs.map((tab) => ({
+			chrome.sessions.getRecentlyClosed(
+				{
+					maxResults: 10,
+				},
+				(sessions) => {
+					const allTabs = sessions.flatMap((session) => {
+						const tabs = session.tab
+							? [session.tab]
+							: session.window?.tabs || []
+						return tabs.map((tab) => ({
 							title: tab.title ?? "",
 							url: tab.url ?? "",
 							icon: tab.favIconUrl ?? "",
-						})),
-					]
-				}, [])
+						}))
+					})
 
-				const uniqueTabs = Array.from(
-					new Map(recentTabs.map((tab) => [tab.url, tab])).values(),
-				)
+					const uniqueTabs = Array.from(
+						new Map(allTabs.map((tab) => [tab.url, tab])).values(),
+					)
 
-				const filteredTabs = uniqueTabs.filter((tab) => {
-					if (
-						tab.url === "about:blank" ||
-						tab.url?.includes("chrome://") ||
-						!tab.url ||
-						tab.url.length < 1
-					) {
-						return false
-					}
+					const filteredTabs = uniqueTabs.filter(
+						(tab) =>
+							tab.url &&
+							tab.url.length > 1 &&
+							!tab.url.startsWith("about:") &&
+							!tab.url.startsWith("chrome://") &&
+							!tab.url.startsWith("view-source:"),
+					)
 
-					return true
-				})
-				sendResponse(filteredTabs)
-			})
+					sendResponse(filteredTabs)
+				},
+			)
 			return true
 		}
 	})

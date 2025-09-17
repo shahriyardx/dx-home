@@ -2,7 +2,7 @@ import useRecentTabs from "@/hooks/useRecentTabs"
 import { ExternalLink } from "lucide-react"
 
 const RecentTabs = () => {
-	const tabs = useRecentTabs()
+	const { tabs } = useRecentTabs()
 
 	return (
 		<>
