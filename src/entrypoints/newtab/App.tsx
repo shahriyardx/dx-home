@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Settings2 } from "lucide-react"
 import { useSettings } from "@/hooks/useSettings"
 import RecentTabs from "@/components/recent-tabs"
+import Tasks from "@/components/tasks/Tasks"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 const App = () => {
 	const [settingsOpen, setSettingsOpen] = useState(false)
@@ -14,7 +16,7 @@ const App = () => {
 	return (
 		<>
 			<div
-				className="h-screen grid grid-cols-1 lg:grid-cols-2 px-10"
+				className="h-screen grid grid-cols-1 lg:grid-cols-2 gap-10 px-10"
 				style={{ background: settings.background }}
 			>
 				<div className="flex flex-col justify-center gap-24">
@@ -23,6 +25,12 @@ const App = () => {
 						<Bookmarks />
 						<RecentTabs />
 					</div>
+				</div>
+
+				<div className="p-10 h-screen overflow-hidden">
+					<ScrollArea className="border p-5 rounded-md h-full">
+						<Tasks />
+					</ScrollArea>
 				</div>
 			</div>
 

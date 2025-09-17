@@ -78,10 +78,7 @@ const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 						<DialogTitle>Edit Bookmark</DialogTitle>
 					</DialogHeader>
 
-					<BookmarkForm
-						form={form}
-						handleSubmit={(values) => console.log(values)}
-					/>
+					<BookmarkForm form={form} handleSubmit={handleSubmit} />
 
 					<DialogFooter>
 						<DialogClose asChild>

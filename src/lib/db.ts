@@ -12,14 +12,29 @@ interface Settings {
 	background: string
 }
 
+interface Task {
+	id: number
+	title: string
+	done: boolean
+	deadline: Date
+	createdAt: Date
+}
+
 const db = new Dexie("dx-database") as Dexie & {
 	bookmarks: EntityTable<Bookmark, "id">
 	settings: EntityTable<Settings, "key">
+	tasks: EntityTable<Task, "id">
 }
 
 db.version(1).stores({
 	bookmarks: "++id, label, url",
 	settings: "key",
+})
+
+db.version(2).stores({
+	bookmarks: "++id, label, url",
+	settings: "key",
+	tasks: "++id, title, done, deadline, createdAt",
 })
 
 db.on("populate", () => {
@@ -36,7 +51,18 @@ db.on("populate", () => {
 		key: "main",
 		background: "linear-gradient(135deg, rgb(0, 0, 0), rgb(67, 67, 67))",
 	})
+
+	db.tasks.add({
+		title: "Delete this task",
+		done: false,
+		deadline: (() => {
+			const current = new Date()
+			current.setHours(current.getHours() + 1)
+			return current
+		})(),
+		createdAt: new Date(),
+	})
 })
 
-export type { Bookmark }
+export type { Bookmark, Task }
 export { db }
