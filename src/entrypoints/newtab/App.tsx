@@ -1,9 +1,11 @@
+import { useState } from "react"
 import Bookmarks from "@/components/bookmark/bookmarks"
 import Clock from "@/components/clock"
 import Settings from "@/components/settings/Settings"
 import { Button } from "@/components/ui/button"
 import { Settings2 } from "lucide-react"
 import { useSettings } from "@/hooks/useSettings"
+import RecentTabs from "@/components/recent-tabs"
 
 const App = () => {
 	const [settingsOpen, setSettingsOpen] = useState(false)
@@ -17,7 +19,10 @@ const App = () => {
 			>
 				<div className="flex flex-col justify-center gap-24">
 					<Clock />
-					<Bookmarks />
+					<div className="grid gap-5">
+						<Bookmarks />
+						<RecentTabs />
+					</div>
 				</div>
 			</div>
 

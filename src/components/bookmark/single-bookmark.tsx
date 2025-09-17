@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import type { Bookmark } from "@/lib/db"
 import { PenIcon, Trash2Icon } from "lucide-react"
