@@ -1,6 +1,12 @@
 import type { Task } from "@/lib/db"
 import { defineBackground } from "wxt/utils/define-background"
 
+export type Tab = {
+	title: string
+	url: string
+	icon: string
+}
+
 export default defineBackground(() => {
 	chrome.alarms.onAlarm.addListener((alarm) => {
 		const task = JSON.parse(alarm.name) as Task & { type: "due" | "5m" }
@@ -34,7 +40,7 @@ export default defineBackground(() => {
 		}
 	}
 
-	chrome.runtime.onMessage.addListener((msg) => {
+	chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 		console.log(msg)
 		if (msg.type === "schedule-task") {
 			scheduleTaskNotification(msg.task as Task)
@@ -50,6 +56,47 @@ export default defineBackground(() => {
 					}
 				})
 			})
+		}
+
+		if (msg.type === "getRecentlyClosed") {
+			chrome.sessions.getRecentlyClosed({ maxResults: 10 }, (sessions) => {
+				const recentTabs = sessions.reduce<Array<Tab>>((prev, curr) => {
+					const prevTabs = prev
+					const curTabs = curr.tab
+						? [curr.tab]
+						: curr.window
+							? curr.window.tabs || []
+							: []
+
+					return [
+						...prevTabs,
+						...curTabs.map((tab) => ({
+							title: tab.title ?? "",
+							url: tab.url ?? "",
+							icon: tab.favIconUrl ?? "",
+						})),
+					]
+				}, [])
+
+				const uniqueTabs = Array.from(
+					new Map(recentTabs.map((tab) => [tab.url, tab])).values(),
+				)
+
+				const filteredTabs = uniqueTabs.filter((tab) => {
+					if (
+						tab.url === "about:blank" ||
+						tab.url?.includes("chrome://") ||
+						!tab.url ||
+						tab.url.length < 1
+					) {
+						return false
+					}
+
+					return true
+				})
+				sendResponse(filteredTabs)
+			})
+			return true
 		}
 	})
 })

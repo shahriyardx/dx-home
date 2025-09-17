@@ -17,7 +17,8 @@
 		"zip:firefox": "wxt zip -b firefox",
 		"compile": "tsc --noEmit",
 		"postinstall": "wxt prepare",
-		"comp": "bunx --bun shadcn@latest add"
+		"comp": "bunx --bun shadcn@latest add",
+		"format": "biome format ./src --write"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.2.1",
