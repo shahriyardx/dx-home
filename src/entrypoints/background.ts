@@ -4,7 +4,6 @@ import { defineBackground } from "wxt/utils/define-background"
 export default defineBackground(() => {
 	chrome.alarms.onAlarm.addListener((alarm) => {
 		const task = JSON.parse(alarm.name) as Task & { type: "due" | "5m" }
-
 		const msg = task.type === "due" ? "past due" : "due in 5 minutes"
 
 		chrome.notifications.create({
@@ -29,7 +28,6 @@ export default defineBackground(() => {
 		}
 
 		if (deadline > now) {
-			console.log("Creating deadline")
 			chrome.alarms.create(JSON.stringify({ ...task, type: "due" }), {
 				when: deadline,
 			})
