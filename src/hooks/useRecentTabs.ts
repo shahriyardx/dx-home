@@ -23,9 +23,16 @@ const useRecentTabs = () => {
 					...prevTabs,
 					...curTabs
 						.filter((tab) => {
-							return (
-								tab.url !== "about:blank" && !tab.url?.includes("chrome://")
-							)
+							if (
+								tab.url === "about:blank" ||
+								tab.url?.includes("chrome://") ||
+								!tab.url ||
+								tab.url.length < 1
+							) {
+								return false
+							}
+
+							return true
 						})
 						.map((tab) => ({
 							title: tab.title ?? "",
