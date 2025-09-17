@@ -21,30 +21,28 @@ const useRecentTabs = () => {
 
 				return [
 					...prevTabs,
-					...curTabs
-						.filter((tab) => {
-							if (
-								tab.url === "about:blank" ||
-								tab.url?.includes("chrome://") ||
-								!tab.url ||
-								tab.url.length < 1
-							) {
-								return false
-							}
-
-							return true
-						})
-						.map((tab) => ({
-							title: tab.title ?? "",
-							url: tab.url ?? "",
-							icon: tab.favIconUrl ?? "",
-						})),
+					...curTabs.map((tab) => ({
+						title: tab.title ?? "",
+						url: tab.url ?? "",
+						icon: tab.favIconUrl ?? "",
+					})),
 				]
 			}, [])
 
 			const uniqueTabs = Array.from(
 				new Map(recentTabs.map((tab) => [tab.url, tab])).values(),
-			)
+			).filter((tab) => {
+				if (
+					tab.url === "about:blank" ||
+					tab.url?.includes("chrome://") ||
+					!tab.url ||
+					tab.url.length < 1
+				) {
+					return false
+				}
+
+				return true
+			})
 			setTabs(uniqueTabs)
 		})
 	}, [])
