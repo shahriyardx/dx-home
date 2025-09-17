@@ -58,38 +58,31 @@ export default defineBackground(() => {
 		}
 
 		if (msg.type === "getRecentlyClosed") {
-			chrome.sessions.getRecentlyClosed(
-				{
-					maxResults: 10,
-				},
-				(sessions) => {
-					const allTabs = sessions.flatMap((session) => {
-						const tabs = session.tab
-							? [session.tab]
-							: session.window?.tabs || []
-						return tabs.map((tab) => ({
-							title: tab.title ?? "",
-							url: tab.url ?? "",
-							icon: tab.favIconUrl ?? "",
-						}))
-					})
+			chrome.sessions.getRecentlyClosed({}, (sessions) => {
+				const allTabs = sessions.flatMap((session) => {
+					const tabs = session.tab ? [session.tab] : session.window?.tabs || []
+					return tabs.map((tab) => ({
+						title: tab.title ?? "",
+						url: tab.url ?? "",
+						icon: tab.favIconUrl ?? "",
+					}))
+				})
 
-					const uniqueTabs = Array.from(
-						new Map(allTabs.map((tab) => [tab.url, tab])).values(),
-					)
+				const uniqueTabs = Array.from(
+					new Map(allTabs.map((tab) => [tab.url, tab])).values(),
+				)
 
-					const filteredTabs = uniqueTabs.filter(
-						(tab) =>
-							tab.url &&
-							tab.url.length > 1 &&
-							!tab.url.startsWith("about:") &&
-							!tab.url.startsWith("chrome://") &&
-							!tab.url.startsWith("view-source:"),
-					)
+				const filteredTabs = uniqueTabs.filter(
+					(tab) =>
+						tab.url &&
+						tab.url.length > 1 &&
+						!tab.url.startsWith("about:") &&
+						!tab.url.startsWith("chrome://") &&
+						!tab.url.startsWith("view-source:"),
+				)
 
-					sendResponse(filteredTabs)
-				},
-			)
+				sendResponse(filteredTabs)
+			})
 			return true
 		}
 	})
