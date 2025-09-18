@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useTasks } from "@/hooks/useTasks"
 import { Button } from "../ui/button"
 import SingleTask from "./single-task"
@@ -7,19 +8,20 @@ import TaskForm from "./task-form"
 
 const Tasks = () => {
 	const { tasks } = useTasks()
+	const [addTaskOpen, setAddTaskOpen] = useState(false)
 
 	return (
 		<div>
 			<div className="flex items-center justify-between">
 				<h1 className="text-2xl font-bold">Tasks</h1>
-				<Dialog>
+				<Dialog open={addTaskOpen} onOpenChange={(val) => setAddTaskOpen(val)}>
 					<DialogTrigger>
 						<Button className="cursor-pointer">Add Task</Button>
 					</DialogTrigger>
 					<DialogContent>
 						<DialogHeader>New task</DialogHeader>
 
-						<TaskForm />
+						<TaskForm onSuccess={() => setAddTaskOpen(false)} />
 					</DialogContent>
 				</Dialog>
 			</div>

@@ -19,7 +19,11 @@ import { Calendar } from "../ui/calendar"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
 import { useTasks } from "@/hooks/useTasks"
 
-const TaskForm = () => {
+type Props = {
+	onSuccess: () => void
+}
+
+const TaskForm = ({ onSuccess }: Props) => {
 	const { addTask } = useTasks()
 
 	const form = useForm({
@@ -32,6 +36,7 @@ const TaskForm = () => {
 			title: "",
 			deadline: new Date(),
 		})
+		onSuccess()
 	}
 
 	function handleDateSelect(date: Date | undefined) {
