@@ -1,37 +1,21 @@
-import { useState, useEffect } from "react"
-import type { Tab } from "@/entrypoints/background"
+import { useLiveQuery } from "dexie-react-hooks"
+import { db } from "@/lib/db"
 
 const useRecentTabs = () => {
-	const [tabs, setTabs] = useState<Tab[]>([])
-	const [loading, setLoading] = useState(true)
+	const tabs =
+		useLiveQuery(() => db.recenttabs.orderBy("id").reverse().toArray()) || []
+	const filteredTabs = tabs.filter(
+		(tab) =>
+			tab.url &&
+			tab.url.length > 1 &&
+			!tab.url.startsWith("about:") &&
+			!tab.url.startsWith("chrome://") &&
+			!tab.url.startsWith("view-source:") &&
+			!tab.title.startsWith("https://") &&
+			!tab.title.startsWith("http://"),
+	)
 
-	useEffect(() => {
-		setTimeout(() => {
-			chrome.runtime.sendMessage({ type: "getRecentlyClosed" }, (sessions) => {
-				if (chrome.runtime.lastError) {
-					console.error(
-						"Error getting recently closed tabs:",
-						chrome.runtime.lastError.message,
-					)
-					setLoading(false)
-					return
-				}
-
-				if (Array.isArray(sessions)) {
-					setTabs(sessions)
-				} else {
-					console.error(
-						"Received invalid response from background script:",
-						sessions,
-					)
-					setTabs([])
-				}
-				setLoading(false)
-			})
-		}, 500)
-	}, [])
-
-	return { tabs, loading }
+	return { tabs: filteredTabs }
 }
 
 export default useRecentTabs

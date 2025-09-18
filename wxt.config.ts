@@ -7,14 +7,14 @@ export default defineConfig({
 	manifest: {
 		name: "DxHome",
 		description: "Minimal newtab ui screen for your browser",
-		permissions: ["topSites", "sessions", "notifications", "alarms"],
+		permissions: ["topSites", "tabs", "notifications", "alarms"],
 	},
 	modules: ["@wxt-dev/module-react"],
 	vite: () => ({
 		plugins: [tailwindcss()],
 		resolve: {
 			alias: {
-				"@": path.resolve(__dirname, "./"), // or "./src" if using src directory
+				"@": path.resolve(__dirname, "./"),
 			},
 		},
 	}),

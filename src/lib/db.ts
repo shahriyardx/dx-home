@@ -20,10 +20,18 @@ interface Task {
 	createdAt: Date
 }
 
+interface RecentlyClosedTabs {
+	id: number
+	title: string
+	url: string
+	icon: string
+}
+
 const db = new Dexie("dx-database") as Dexie & {
 	bookmarks: EntityTable<Bookmark, "id">
 	settings: EntityTable<Settings, "key">
 	tasks: EntityTable<Task, "id">
+	recenttabs: EntityTable<RecentlyClosedTabs, "id">
 }
 
 db.version(1).stores({
@@ -35,6 +43,13 @@ db.version(2).stores({
 	bookmarks: "++id, label, url",
 	settings: "key",
 	tasks: "++id, title, done, deadline, createdAt",
+})
+
+db.version(3).stores({
+	bookmarks: "++id, label, url",
+	settings: "key",
+	tasks: "++id, title, done, deadline, createdAt",
+	recenttabs: "++id, title, url, icon",
 })
 
 db.on("populate", () => {
