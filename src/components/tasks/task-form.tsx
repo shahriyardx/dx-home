@@ -63,6 +63,7 @@ const TaskForm = ({ onSuccess }: Props) => {
 			}
 		}
 
+		newDate.setSeconds(0)
 		form.setValue("deadline", newDate)
 	}
 
