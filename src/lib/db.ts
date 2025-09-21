@@ -20,7 +20,7 @@ interface Task {
 	createdAt: Date
 }
 
-interface RecentlyClosedTabs {
+export interface RecentlyClosedTabs {
 	id: number
 	title: string
 	url: string

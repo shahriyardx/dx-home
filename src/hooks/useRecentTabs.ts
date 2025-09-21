@@ -1,7 +1,7 @@
 import { useLiveQuery } from "dexie-react-hooks"
 import { db } from "@/lib/db"
 
-const useRecentTabs = () => {
+const useRecentTabs = ({ max }: { max: number } = { max: 10 }) => {
 	const tabs =
 		useLiveQuery(() => db.recenttabs.orderBy("id").reverse().toArray()) || []
 	const filteredTabs = tabs.filter(
@@ -16,9 +16,18 @@ const useRecentTabs = () => {
 	)
 	const uniqueTabs = Array.from(
 		new Map(filteredTabs.map((tab) => [tab.url, tab])).values(),
-	).slice(0, 10)
+	)
 
-	return { tabs: uniqueTabs }
+	const deleteTab = (id: number) => {
+		db.recenttabs.delete(id)
+	}
+
+	return {
+		tabs: uniqueTabs.slice(0, max),
+		hasMore: uniqueTabs.length > max,
+		allTabs: uniqueTabs,
+		deleteTab,
+	}
 }
 
 export default useRecentTabs

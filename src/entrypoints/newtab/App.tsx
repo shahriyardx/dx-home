@@ -5,9 +5,9 @@ import Settings from "@/components/settings/Settings"
 import { Button } from "@/components/ui/button"
 import { Settings2 } from "lucide-react"
 import { useSettings } from "@/hooks/useSettings"
-import RecentTabs from "@/components/recent-tabs"
 import Tasks from "@/components/tasks/Tasks"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import RecentTabs from "@/components/recent-tabs/tabs"
 
 const App = () => {
 	const [settingsOpen, setSettingsOpen] = useState(false)
