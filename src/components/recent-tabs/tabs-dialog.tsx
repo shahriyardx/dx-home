@@ -14,7 +14,7 @@ import { DialogClose } from "@radix-ui/react-dialog"
 import { Button } from "../ui/button"
 
 const TabsDialog = () => {
-	const { hasMore, allTabs, deleteTab } = useRecentTabs({ max: 2 })
+	const { hasMore, allTabs, deleteTab } = useRecentTabs({ max: 10 })
 	return (
 		<Dialog>
 			{hasMore && (
@@ -49,7 +49,7 @@ const TabsDialog = () => {
 										/>
 									)}
 
-									<div className="w-full truncate" title={tab.title}>
+									<div className="max-w-[30ch] truncate" title={tab.title}>
 										{tab.title}
 									</div>
 

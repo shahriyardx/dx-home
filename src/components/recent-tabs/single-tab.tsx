@@ -19,7 +19,7 @@ const SingleTab = ({ tab }: Props) => {
 						className="w-5 h-5 object-cover"
 					/>
 				)}
-				<p>{tab.title}</p>
+				<p className="max-w-[30ch] truncate">{tab.title}</p>
 			</a>
 
 			<ExternalLink
