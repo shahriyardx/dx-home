@@ -1,6 +1,11 @@
 import { Controller } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { Field, FieldContent, FieldLabel, FieldError } from "@/components/ui/field"
+import {
+	Field,
+	FieldContent,
+	FieldLabel,
+	FieldError,
+} from "@/components/ui/field"
 import type { UseFormReturn } from "react-hook-form"
 import type { BookmarkType } from "."
 
@@ -34,7 +39,11 @@ const BookmarkForm = ({
 					<Field data-invalid={fieldState.invalid}>
 						<FieldLabel htmlFor={field.name}>URL</FieldLabel>
 						<FieldContent>
-							<Input {...field} id={field.name} placeholder="https://example.com" />
+							<Input
+								{...field}
+								id={field.name}
+								placeholder="https://example.com"
+							/>
 							{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
 						</FieldContent>
 					</Field>

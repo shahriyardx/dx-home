@@ -1,4 +1,5 @@
-import { db, type Task } from "@/lib/db"
+import { db } from "@/lib/db"
+import type { Task } from "@/hooks/useTasks"
 import { defineBackground } from "wxt/utils/define-background"
 
 export type Tab = {

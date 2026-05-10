@@ -3,7 +3,12 @@ import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Field, FieldContent, FieldLabel, FieldError } from "@/components/ui/field"
+import {
+	Field,
+	FieldContent,
+	FieldLabel,
+	FieldError,
+} from "@/components/ui/field"
 import { taskSchema, type TaskType } from "."
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Button } from "../ui/button"
@@ -99,7 +104,11 @@ const TaskForm = ({ onSuccess, defaultValues, onSubmit }: Props) => {
 					<Field data-invalid={fieldState.invalid}>
 						<FieldLabel htmlFor={field.name}>Title</FieldLabel>
 						<FieldContent>
-							<Input {...field} id={field.name} placeholder="What needs to be done?" />
+							<Input
+								{...field}
+								id={field.name}
+								placeholder="What needs to be done?"
+							/>
 							{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
 						</FieldContent>
 					</Field>
@@ -177,7 +186,10 @@ const TaskForm = ({ onSuccess, defaultValues, onSubmit }: Props) => {
 														</Button>
 													))}
 												</div>
-												<ScrollBar orientation="horizontal" className="sm:hidden" />
+												<ScrollBar
+													orientation="horizontal"
+													className="sm:hidden"
+												/>
 											</ScrollArea>
 											<ScrollArea className="w-64 sm:w-auto">
 												<div className="flex sm:flex-col p-2">
@@ -200,7 +212,10 @@ const TaskForm = ({ onSuccess, defaultValues, onSubmit }: Props) => {
 														</Button>
 													))}
 												</div>
-												<ScrollBar orientation="horizontal" className="sm:hidden" />
+												<ScrollBar
+													orientation="horizontal"
+													className="sm:hidden"
+												/>
 											</ScrollArea>
 											<ScrollArea>
 												<div className="flex sm:flex-col p-2">
@@ -210,8 +225,10 @@ const TaskForm = ({ onSuccess, defaultValues, onSubmit }: Props) => {
 															size="icon"
 															variant={
 																deadlineValue &&
-																((ampm === "AM" && deadlineValue.getHours() < 12) ||
-																	(ampm === "PM" && deadlineValue.getHours() >= 12))
+																((ampm === "AM" &&
+																	deadlineValue.getHours() < 12) ||
+																	(ampm === "PM" &&
+																		deadlineValue.getHours() >= 12))
 																	? "default"
 																	: "ghost"
 															}

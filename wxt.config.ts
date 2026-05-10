@@ -7,7 +7,7 @@ export default defineConfig({
 	manifest: {
 		name: "DxHome",
 		description: "Minimal newtab ui screen for your browser",
-		permissions: ["topSites", "tabs", "notifications", "alarms"],
+		permissions: ["topSites", "tabs", "notifications", "alarms", "storage"],
 	},
 	modules: ["@wxt-dev/module-react"],
 	vite: () => ({
