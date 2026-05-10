@@ -5,9 +5,7 @@ import RecentTabs from "@/components/recent-tabs/tabs"
 import SearchBar from "@/components/search"
 
 const App = () => (
-	<div
-		className="min-h-screen grid grid-cols-1 lg:grid-cols-[6fr_4fr] bg-[url('/banner.png')]"
-	>
+	<div className="min-h-screen grid grid-cols-1 lg:grid-cols-[6fr_4fr] bg-[url('/banner.png')] bg-cover bg-center">
 		<div className="flex flex-col justify-center px-16 relative ">
 			<div className="absolute inset-0 bg-cover opacity-50 z-0"></div>
 			<div className="flex flex-col justify-center z-50">

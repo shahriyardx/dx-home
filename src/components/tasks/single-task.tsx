@@ -27,6 +27,7 @@ type Props = {
 const SingleTask = ({ task }: Props) => {
 	const { deleteTask, updateTask } = useTasks()
 	const [editOpen, setEditOpen] = useState(false)
+	const [descExpanded, setDescExpanded] = useState(false)
 	const [countdown, setCountdown] = useState("")
 
 	const deadline = task.deadline
@@ -68,13 +69,11 @@ const SingleTask = ({ task }: Props) => {
 				className={"group bg-secondary/2 backdrop-blur-2xl border"}
 			>
 				<CardHeader>
-					<CardTitle className="text-xs">
-						<p>
+					<CardTitle>
+						<p className="text-xs font-mono">
 							{hasDeadline ? (
 								<>
-									<span className={cn("font-medium", urgencyColor)}>
-										{countdown}
-									</span>
+									<span className={cn(urgencyColor)}>{countdown}</span>
 									<span className="mx-1 text-muted-foreground/40">
 										&middot;
 									</span>
@@ -109,8 +108,18 @@ const SingleTask = ({ task }: Props) => {
 						</div>
 					</CardAction>
 					{task.description && (
-						<CardDescription>
-							<p className="text-muted-foreground">{task.description}</p>
+						<CardDescription
+							className="cursor-pointer"
+							onClick={() => setDescExpanded((prev) => !prev)}
+						>
+							<p
+								className={cn(
+									"text-muted-foreground text-xs",
+									!descExpanded && "line-clamp-1",
+								)}
+							>
+								{task.description}
+							</p>
 						</CardDescription>
 					)}
 				</CardHeader>
