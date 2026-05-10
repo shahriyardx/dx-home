@@ -38,7 +38,7 @@ export function BookmarkDialog({ children }: DialogProps) {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{children}</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent className="sm:max-w-106">
 				<DialogHeader>
 					<DialogTitle>Add Bookmark</DialogTitle>
 				</DialogHeader>

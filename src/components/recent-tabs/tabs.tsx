@@ -15,7 +15,7 @@ const RecentTabs = () => {
 					</p>
 					<div className="grid grid-cols-1 md:flex items-center gap-1.5 flex-wrap">
 						{tabs.map((tab) => (
-							<SingleTab tab={tab} />
+							<SingleTab key={tab.id} tab={tab} />
 						))}
 					</div>
 				</div>

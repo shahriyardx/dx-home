@@ -43,6 +43,7 @@ const SingleTab = ({ tab }: Props) => {
 					<a
 						href={tab.url}
 						target="_blank"
+						rel="noreferrer"
 						className="min-w-0 flex-1"
 						title={tab.title}
 					>

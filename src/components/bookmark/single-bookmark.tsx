@@ -22,18 +22,6 @@ import { bookmarkSchema, type BookmarkType } from "."
 import { useBookmarks } from "@/hooks/useBookmarks"
 import { urlToFavicon } from "@/lib/utils"
 
-const faviconCache = new Map<string, string>()
-
-function getFavicon(url: string): string {
-	if (faviconCache.has(url)) return faviconCache.get(url)!
-	try {
-		const parsed = new URL(url)
-		return `${parsed.origin}/favicon.ico`
-	} catch {
-		return ""
-	}
-}
-
 const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 	const [open, setOpen] = useState(false)
 	const { deleteBookmark, updateBookmark } = useBookmarks()
