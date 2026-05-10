@@ -50,7 +50,7 @@ const Clock = () => {
 		>
 			<h1
 				className={cn(
-					"font-light tracking-tight text-foreground",
+					"font-bold tracking-tight text-foreground",
 					clockOnly ? "text-[min(18vw,8rem)]" : "text-7xl lg:text-8xl",
 				)}
 			>

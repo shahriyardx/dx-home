@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource-variable/inter";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -46,7 +47,7 @@
     --color-glass: var(--glass);
     --color-glass-border: var(--glass-border);
     --color-glass-hover: var(--glass-hover);
-    --font-heading: var(--font-mono);
+    --font-heading: var(--font-sans);
     --font-mono: "JetBrains Mono Variable", monospace;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
@@ -59,6 +60,7 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    --font-sans: 'Inter Variable', sans-serif;
 }
 
 :root {
@@ -210,6 +212,6 @@
         background: oklch(0.68 0.18 265 / 0.25);
     }
     html {
-        @apply font-mono;
+        @apply font-sans;
     }
 }

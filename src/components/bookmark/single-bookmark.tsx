@@ -1,13 +1,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import type { Bookmark } from "@/lib/db"
-import { PenIcon, Trash2Icon } from "lucide-react"
-import {
-	ContextMenu,
-	ContextMenuContent,
-	ContextMenuItem,
-	ContextMenuTrigger,
-} from "@/components/ui/context-menu"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -17,10 +10,17 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "../ui/dialog"
+} from "@/components/ui/dialog"
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu"
 import BookmarkForm from "./bookmark-form"
 import { bookmarkSchema, type BookmarkType } from "."
 import { useBookmarks } from "@/hooks/useBookmarks"
+import { urlToFavicon } from "@/lib/utils"
 
 const faviconCache = new Map<string, string>()
 
@@ -36,7 +36,6 @@ function getFavicon(url: string): string {
 
 const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 	const [open, setOpen] = useState(false)
-	const [faviconSrc, setFaviconSrc] = useState(getFavicon(bookmark.url))
 	const { deleteBookmark, updateBookmark } = useBookmarks()
 
 	const form = useForm({
@@ -50,61 +49,36 @@ const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 		setOpen(false)
 	}
 
-	const handleFaviconError = () => {
-		try {
-			const parsed = new URL(bookmark.url)
-			const fallback = `https://icons.duckduckgo.com/ip3/${parsed.hostname}.ico`
-			faviconCache.set(bookmark.url, fallback)
-			setFaviconSrc(fallback)
-		} catch {
-			setFaviconSrc("")
-		}
-	}
-
 	return (
 		<>
 			<ContextMenu>
 				<ContextMenuTrigger>
 					<div className="flex flex-col gap-1.5 items-center group">
-						<Button
-							size="icon"
-							variant="ghost"
-							className="w-12 h-12 bg-secondary/50 hover:bg-secondary transition-colors rounded-none!"
-							asChild
+						<a
+							href={bookmark.url}
+							className="w-12 h-12 border rounded-md bg-secondary/50 grid place-items-center"
 						>
-							<a href={bookmark.url}>
-								{faviconSrc ? (
-									<img
-										src={faviconSrc}
-										onError={handleFaviconError}
-										alt=""
-										className="w-5 h-5 object-contain"
-									/>
-								) : (
-									<span className="text-sm text-muted-foreground">
-										{bookmark.label.charAt(0).toUpperCase()}
-									</span>
-								)}
-							</a>
-						</Button>
-
-						<span className="text-[11px] text-muted-foreground text-center max-w-[10ch] truncate leading-tight">
-							{bookmark.label}
-						</span>
+							<img
+								src={urlToFavicon(bookmark.url)}
+								alt=""
+								className="w-5 h-5"
+							/>
+						</a>
 					</div>
 				</ContextMenuTrigger>
 				<ContextMenuContent>
-					<ContextMenuItem onMouseDown={() => setOpen(true)}>
-						<PenIcon className="size-3.5" /> Edit
-					</ContextMenuItem>
-					<ContextMenuItem variant="destructive" onMouseDown={() => deleteBookmark(bookmark.id)}>
-						<Trash2Icon className="size-3.5" /> Delete
+					<ContextMenuItem onClick={() => setOpen(true)}>Edit</ContextMenuItem>
+					<ContextMenuItem
+						variant="destructive"
+						onClick={() => deleteBookmark(bookmark.id)}
+					>
+						Delete
 					</ContextMenuItem>
 				</ContextMenuContent>
 			</ContextMenu>
 
 			<Dialog open={open} onOpenChange={(val) => setOpen(val)}>
-				<DialogContent className="sm:max-w-[425px]">
+				<DialogContent className="sm:max-w-106.25">
 					<DialogHeader>
 						<DialogTitle>Edit Bookmark</DialogTitle>
 					</DialogHeader>

@@ -9,7 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 	CardAction,
-	CardContent,
+	CardDescription,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
@@ -65,28 +65,30 @@ const SingleTask = ({ task }: Props) => {
 		<>
 			<Card
 				size="sm"
-				className={cn(
-					"group bg-secondary/50",
-					urgency === "overdue" && "opacity-60",
-				)}
+				className={"group bg-secondary/2 backdrop-blur-2xl border"}
 			>
 				<CardHeader>
 					<CardTitle className="text-xs">
-						{hasDeadline ? (
-							<>
-								<span className={cn("font-medium", urgencyColor)}>
-									{countdown}
+						<p>
+							{hasDeadline ? (
+								<>
+									<span className={cn("font-medium", urgencyColor)}>
+										{countdown}
+									</span>
+									<span className="mx-1 text-muted-foreground/40">
+										&middot;
+									</span>
+									<span className="font-normal text-muted-foreground">
+										{moment(deadline).format("MMM D, h:mm A")}
+									</span>
+								</>
+							) : (
+								<span className="text-muted-foreground">
+									Created {moment(task.createdAt).fromNow()}
 								</span>
-								<span className="mx-1 text-muted-foreground/40">&middot;</span>
-								<span className="font-normal text-muted-foreground">
-									{moment(deadline).format("MMM D, h:mm A")}
-								</span>
-							</>
-						) : (
-							<span className="text-muted-foreground">
-								Created {moment(task.createdAt).fromNow()}
-							</span>
-						)}
+							)}
+						</p>
+						<p className="text-lg">{task.title}</p>
 					</CardTitle>
 					<CardAction>
 						<div className="flex gap-1">
@@ -106,13 +108,12 @@ const SingleTask = ({ task }: Props) => {
 							</Button>
 						</div>
 					</CardAction>
-				</CardHeader>
-				<CardContent>
-					<p className="text-lg">{task.title}</p>
 					{task.description && (
-						<p className="text-muted-foreground mt-2">{task.description}</p>
+						<CardDescription>
+							<p className="text-muted-foreground">{task.description}</p>
+						</CardDescription>
 					)}
-				</CardContent>
+				</CardHeader>
 			</Card>
 
 			<Dialog open={editOpen} onOpenChange={setEditOpen}>
