@@ -6,7 +6,12 @@ import { useEffect, useState, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog"
 import TaskForm from "./task-form"
 
 type Props = {
@@ -65,7 +70,7 @@ const SingleTask = ({ task }: Props) => {
 								>
 									{countdown}
 								</span>
-								{urgency !== "none" && (
+								{hasDeadline && (
 									<span className="text-muted-foreground">&middot;</span>
 								)}
 								<span className="text-muted-foreground">
@@ -88,9 +93,9 @@ const SingleTask = ({ task }: Props) => {
 					)}
 				</div>
 
-				<div className="flex flex-col gap-1.5">
+				<div className="flex items-center gap-1.5">
 					<Button
-						variant="ghost"
+						variant="outline"
 						size="icon"
 						className="size-7 shrink-0 text-muted-foreground/50 hover:text-foreground"
 						onClick={() => setEditOpen(true)}

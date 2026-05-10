@@ -18,7 +18,7 @@ const App = () => (
       </div>
     </div>
 
-    <div className="lg:h-screen overflow-hidden">
+    <div className="max-lg:hidden lg:h-screen overflow-hidden">
       <div className="h-full border-l border-border">
         <Tasks />
       </div>
