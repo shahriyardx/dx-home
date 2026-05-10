@@ -1,9 +1,10 @@
 import { cn } from "@/lib/utils"
 import { useState, useEffect } from "react"
 
+const BG = "#0a0a0a"
+
 const Clock = () => {
 	const [clockOnly, setClockOnly] = useState(false)
-	const settings = useSettings()
 	const [currentTime, setCurrentTime] = useState(new Date())
 
 	useEffect(() => {
@@ -20,10 +21,12 @@ const Clock = () => {
 		const ampm = hours >= 12 ? "PM" : "AM"
 		hours = hours % 12
 		hours = hours ? hours : 12
-		const hoursFormatted = hours < 10 ? `0${hours}` : hours
-		const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes
-		const seconds = showSeconds ? `:${date.getSeconds()}` : ""
-		return `${hoursFormatted}:${formattedMinutes}${seconds} ${clockOnly ? "" : ampm}`
+		const h = hours < 10 ? `0${hours}` : hours
+		const m = minutes < 10 ? `0${minutes}` : minutes
+		const s = showSeconds
+			? `:${String(date.getSeconds()).padStart(2, "0")}`
+			: ""
+		return `${h}:${m}${s} ${clockOnly ? "" : ampm}`
 	}
 
 	const formatDate = (date: Date) => {
@@ -39,19 +42,24 @@ const Clock = () => {
 		<div
 			onClick={() => setClockOnly((val) => !val)}
 			className={cn(
-				"cursor-pointer select-none",
+				"cursor-pointer select-none transition-opacity duration-500",
 				clockOnly &&
-					"flex flex-col justify-center items-center fixed top-0 left-0 w-full h-screen z-50",
+					"flex flex-col justify-center items-center fixed inset-0 z-50",
 			)}
-			style={clockOnly ? { background: settings.background } : {}}
+			style={clockOnly ? { background: BG } : {}}
 		>
-			<h1 className={cn("text-9xl font-bold", clockOnly && "text-[10rem]")}>
+			<h1
+				className={cn(
+					"font-light tracking-tight text-foreground",
+					clockOnly ? "text-[min(18vw,8rem)]" : "text-7xl lg:text-8xl",
+				)}
+			>
 				{formatTime(currentTime, clockOnly)}
 			</h1>
 			{!clockOnly && (
-				<h2 className="text-lg text-primary/50 font-semibold">
+				<p className="mt-1 text-sm text-muted-foreground">
 					{formatDate(currentTime)}
-				</h2>
+				</p>
 			)}
 		</div>
 	)

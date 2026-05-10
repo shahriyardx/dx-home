@@ -22,11 +22,22 @@ import BookmarkForm from "./bookmark-form"
 import { bookmarkSchema, type BookmarkType } from "."
 import { useBookmarks } from "@/hooks/useBookmarks"
 
+const faviconCache = new Map<string, string>()
+
+function getFavicon(url: string): string {
+	if (faviconCache.has(url)) return faviconCache.get(url)!
+	try {
+		const parsed = new URL(url)
+		return `${parsed.origin}/favicon.ico`
+	} catch {
+		return ""
+	}
+}
+
 const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 	const [open, setOpen] = useState(false)
+	const [faviconSrc, setFaviconSrc] = useState(getFavicon(bookmark.url))
 	const { deleteBookmark, updateBookmark } = useBookmarks()
-
-	const url = new URL(bookmark.url)
 
 	const form = useForm({
 		resolver: zodResolver(bookmarkSchema),
@@ -35,39 +46,59 @@ const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 
 	const handleSubmit = async (values: BookmarkType) => {
 		await updateBookmark(bookmark.id, values)
+		form.reset({ label: "", url: "https://" })
 		setOpen(false)
+	}
+
+	const handleFaviconError = () => {
+		try {
+			const parsed = new URL(bookmark.url)
+			const fallback = `https://icons.duckduckgo.com/ip3/${parsed.hostname}.ico`
+			faviconCache.set(bookmark.url, fallback)
+			setFaviconSrc(fallback)
+		} catch {
+			setFaviconSrc("")
+		}
 	}
 
 	return (
 		<>
 			<ContextMenu>
 				<ContextMenuTrigger>
-					<div className="flex flex-col gap-1 items-center">
-						<Button size="icon" className="rounded-full w-10 h-10 p-2" asChild>
+					<div className="flex flex-col gap-1.5 items-center group">
+						<Button
+							size="icon"
+							variant="ghost"
+							className="w-12 h-12 bg-secondary/50 hover:bg-secondary transition-colors rounded-none!"
+							asChild
+						>
 							<a href={bookmark.url}>
-								<img
-									src={`${url.origin}/favicon.ico`}
-									onError={(e) => {
-										e.currentTarget.src = `https://icons.duckduckgo.com/ip3/${url.hostname}.ico`
-									}}
-									alt=""
-								/>
+								{faviconSrc ? (
+									<img
+										src={faviconSrc}
+										onError={handleFaviconError}
+										alt=""
+										className="w-5 h-5 object-contain"
+									/>
+								) : (
+									<span className="text-sm text-muted-foreground">
+										{bookmark.label.charAt(0).toUpperCase()}
+									</span>
+								)}
 							</a>
 						</Button>
 
-						{bookmark.label.split(" ").length === 1 ? (
-							<p>{bookmark.label}</p>
-						) : (
-							<p className="max-w-[8ch] truncate">{bookmark.label}</p>
-						)}
+						<span className="text-[11px] text-muted-foreground text-center max-w-[10ch] truncate leading-tight">
+							{bookmark.label}
+						</span>
 					</div>
 				</ContextMenuTrigger>
 				<ContextMenuContent>
-					<ContextMenuItem onSelect={() => setOpen(true)}>
-						<PenIcon /> Edit
+					<ContextMenuItem onMouseDown={() => setOpen(true)}>
+						<PenIcon className="size-3.5" /> Edit
 					</ContextMenuItem>
-					<ContextMenuItem onClick={() => deleteBookmark(bookmark.id)}>
-						<Trash2Icon /> Delete
+					<ContextMenuItem variant="destructive" onMouseDown={() => deleteBookmark(bookmark.id)}>
+						<Trash2Icon className="size-3.5" /> Delete
 					</ContextMenuItem>
 				</ContextMenuContent>
 			</ContextMenu>
@@ -90,13 +121,13 @@ const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 							type="submit"
 							className="cursor-pointer"
 							onClick={async () => {
-								await form.trigger()
-								if (form.formState.isValid) {
-									handleSubmit(form.getValues())
+								const valid = await form.trigger()
+								if (valid) {
+									await handleSubmit(form.getValues())
 								}
 							}}
 						>
-							Save changes
+							Save
 						</Button>
 					</DialogFooter>
 				</DialogContent>

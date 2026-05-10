@@ -13,16 +13,21 @@ const Bookmarks = () => {
 				<SingleBookmark key={bookmark.id} bookmark={bookmark} />
 			))}
 			<BookmarkDialog>
-				<div className="flex flex-col gap-1 items-center">
+				<div className="flex flex-col gap-1.5 items-center group cursor-pointer">
 					<Button
 						size="icon"
-						className="rounded-full w-10 h-10 p-3 cursor-pointer"
+						variant="ghost"
+						className="w-12 h-12 border border-dashed border-border bg-transparent hover:bg-secondary/50 transition-colors cursor-pointer rounded-none!"
 						asChild
 					>
-						<PlusIcon className="w-5 h-5" />
+						<span>
+							<PlusIcon className="w-5 h-5 text-muted-foreground" />
+						</span>
 					</Button>
 
-					<p>Add</p>
+					<span className="text-[11px] text-muted-foreground/60 text-center leading-tight">
+						Add
+					</span>
 				</div>
 			</BookmarkDialog>
 		</div>

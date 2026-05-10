@@ -7,16 +7,12 @@ interface Bookmark {
 	url: string
 }
 
-interface Settings {
-	key: "main"
-	background: string
-}
-
 interface Task {
 	id: number
 	title: string
+	description?: string
 	done: boolean
-	deadline: Date
+	deadline?: Date
 	createdAt: Date
 }
 
@@ -29,25 +25,21 @@ export interface RecentlyClosedTabs {
 
 const db = new Dexie("dx-database") as Dexie & {
 	bookmarks: EntityTable<Bookmark, "id">
-	settings: EntityTable<Settings, "key">
 	tasks: EntityTable<Task, "id">
 	recenttabs: EntityTable<RecentlyClosedTabs, "id">
 }
 
 db.version(1).stores({
 	bookmarks: "++id, label, url",
-	settings: "key",
 })
 
 db.version(2).stores({
 	bookmarks: "++id, label, url",
-	settings: "key",
 	tasks: "++id, title, done, deadline, createdAt",
 })
 
 db.version(3).stores({
 	bookmarks: "++id, label, url",
-	settings: "key",
 	tasks: "++id, title, done, deadline, createdAt",
 	recenttabs: "++id, title, url, icon",
 })
@@ -60,11 +52,6 @@ db.on("populate", () => {
 		}))
 
 		db.bookmarks.bulkAdd(bookmarks)
-	})
-
-	db.settings.put({
-		key: "main",
-		background: "linear-gradient(135deg, rgb(0, 0, 0), rgb(67, 67, 67))",
 	})
 
 	db.tasks.add({

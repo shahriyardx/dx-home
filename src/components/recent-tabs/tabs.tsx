@@ -1,42 +1,46 @@
-import useRecentTabs from "@/hooks/useRecentTabs"
-import SingleTab from "./single-tab"
-import TabsDialog from "./tabs-dialog"
+import useRecentTabs from "@/hooks/useRecentTabs";
+import SingleTab from "./single-tab";
 import {
-	ContextMenu,
-	ContextMenuContent,
-	ContextMenuItem,
-	ContextMenuTrigger,
-} from "../ui/context-menu"
-import { Trash2Icon } from "lucide-react"
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "../ui/context-menu";
+import { Trash2Icon } from "lucide-react";
+
+const MAX_TABS = 10;
 
 const RecentTabs = () => {
-	const { tabs, deleteTab } = useRecentTabs({ max: 2 })
+  const { tabs, deleteTab } = useRecentTabs({ max: MAX_TABS });
 
-	return (
-		<>
-			{tabs.length > 0 && (
-				<div>
-					<h1 className="text-lg font-bold">Recent Tabs</h1>
-					<div className="mt-2 flex items-center gap-2 flex-wrap">
-						{tabs.map((tab) => (
-							<ContextMenu key={tab.id}>
-								<ContextMenuTrigger>
-									<SingleTab key={tab.id} tab={tab} />
-								</ContextMenuTrigger>
-								<ContextMenuContent>
-									<ContextMenuItem onClick={() => deleteTab(tab.id)}>
-										<Trash2Icon /> Delete
-									</ContextMenuItem>
-								</ContextMenuContent>
-							</ContextMenu>
-						))}
+  return (
+    <>
+      {tabs.length > 0 && (
+        <div>
+          <p className="font-medium text-muted-foreground uppercase tracking-wider mb-2">
+              Recent Tabs
+          </p>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {tabs.map((tab) => (
+              <ContextMenu key={tab.id}>
+                <ContextMenuTrigger>
+                  <SingleTab tab={tab} />
+                </ContextMenuTrigger>
+                <ContextMenuContent>
+                  <ContextMenuItem
+                    variant="destructive"
+                    onMouseDown={() => deleteTab(tab.id)}
+                  >
+                    <Trash2Icon className="size-3.5" /> Delete
+                  </ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
-						<TabsDialog />
-					</div>
-				</div>
-			)}
-		</>
-	)
-}
-
-export default RecentTabs
+export default RecentTabs;

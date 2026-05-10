@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
 	Dialog,
@@ -16,6 +17,8 @@ import { bookmarkSchema, type BookmarkType } from "."
 import { useBookmarks } from "@/hooks/useBookmarks"
 
 export function BookmarkDialog({ children }: DialogProps) {
+	const [open, setOpen] = useState(false)
+
 	const form = useForm<BookmarkType>({
 		resolver: zodResolver(bookmarkSchema),
 		defaultValues: {
@@ -29,10 +32,11 @@ export function BookmarkDialog({ children }: DialogProps) {
 	const handleSubmit = async (values: BookmarkType) => {
 		await addBookmark(values)
 		form.reset({ label: "", url: "https://" })
+		setOpen(false)
 	}
 
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
@@ -51,13 +55,13 @@ export function BookmarkDialog({ children }: DialogProps) {
 						type="submit"
 						className="cursor-pointer"
 						onClick={async () => {
-							await form.trigger()
-							if (form.formState.isValid) {
-								handleSubmit(form.getValues())
+							const valid = await form.trigger()
+							if (valid) {
+								await handleSubmit(form.getValues())
 							}
 						}}
 					>
-						Save changes
+						Add
 					</Button>
 				</DialogFooter>
 			</DialogContent>

@@ -1,12 +1,6 @@
+import { Controller } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form"
+import { Field, FieldContent, FieldLabel, FieldError } from "@/components/ui/field"
 import type { UseFormReturn } from "react-hook-form"
 import type { BookmarkType } from "."
 
@@ -18,39 +12,35 @@ const BookmarkForm = ({
 	handleSubmit: (values: BookmarkType) => void
 }) => {
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(handleSubmit)}>
-				<div className="space-y-4">
-					<FormField
-						control={form.control}
-						name="label"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Name</FormLabel>
-								<FormControl>
-									<Input placeholder="Example" {...field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+		<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+			<Controller
+				name="label"
+				control={form.control}
+				render={({ field, fieldState }) => (
+					<Field data-invalid={fieldState.invalid}>
+						<FieldLabel htmlFor={field.name}>Name</FieldLabel>
+						<FieldContent>
+							<Input {...field} id={field.name} placeholder="Example" />
+							{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+						</FieldContent>
+					</Field>
+				)}
+			/>
 
-					<FormField
-						control={form.control}
-						name="url"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>URL</FormLabel>
-								<FormControl>
-									<Input placeholder="https://example.com" {...field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				</div>
-			</form>
-		</Form>
+			<Controller
+				name="url"
+				control={form.control}
+				render={({ field, fieldState }) => (
+					<Field data-invalid={fieldState.invalid}>
+						<FieldLabel htmlFor={field.name}>URL</FieldLabel>
+						<FieldContent>
+							<Input {...field} id={field.name} placeholder="https://example.com" />
+							{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+						</FieldContent>
+					</Field>
+				)}
+			/>
+		</form>
 	)
 }
 

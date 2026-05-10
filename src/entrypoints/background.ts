@@ -24,7 +24,8 @@ export default defineBackground(() => {
 	})
 
 	// Example: schedule an alarm from your React popup
-	function scheduleTaskNotification(task: Task) {
+	function scheduleTaskNotification(task: Task & { deadline?: Date }) {
+		if (!task.deadline) return
 		const deadline = new Date(task.deadline).getTime()
 		const now = Date.now()
 
