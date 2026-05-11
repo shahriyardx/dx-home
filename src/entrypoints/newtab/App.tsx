@@ -6,8 +6,9 @@ import RecentTabs from "@/components/recent-tabs/tabs"
 import SearchBar from "@/components/search"
 import { useBackground } from "@/hooks/useBackground"
 import { useReadingList } from "@/hooks/useReadingList"
-import { useNewtabSettings } from "@/hooks/useNewtabSettings"
 import { Check, BookOpen, ChevronLeft, ChevronRight } from "lucide-react"
+import { urlToFavicon } from "@/lib/utils"
+import { useNewtabSettings } from "@/hooks/useNewtabSettings"
 
 function formatHostname(url: string): string {
 	try {
@@ -62,8 +63,7 @@ function NewtabReadingList() {
 						) : (
 							<img
 								src={
-									item.icon ||
-									`https://www.google.com/s2/favicons?domain=${item.url}&sz=16`
+									item.icon || urlToFavicon(item.url)
 								}
 								alt=""
 								className="size-4 shrink-0 rounded"

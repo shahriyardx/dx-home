@@ -1,6 +1,6 @@
 import { useReadingList } from "@/hooks/useReadingList"
 import { BookOpen, Check, Trash2 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, urlToFavicon } from "@/lib/utils"
 import { useState } from "react"
 
 type Filter = "all" | "unread" | "read"
@@ -56,10 +56,7 @@ export function ReadingListView() {
 							)}
 						>
 							<img
-								src={
-									item.icon ||
-									`https://www.google.com/s2/favicons?domain=${item.url}&sz=16`
-								}
+								src={item.icon || urlToFavicon(item.url)}
 								alt=""
 								className="size-3.5 shrink-0 rounded"
 							/>

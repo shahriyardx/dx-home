@@ -46,7 +46,7 @@ export function useNewtabSettings() {
 	}, [])
 
 	const updateSetting = useCallback(
-		(key: keyof NewtabSettings, value: boolean) => {
+		<K extends keyof NewtabSettings>(key: K, value: NewtabSettings[K]) => {
 			const next = { ...settings, [key]: value }
 			setSettings(next)
 			chrome.storage.local.set({ [STORAGE_KEY]: next })
