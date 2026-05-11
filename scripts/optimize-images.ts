@@ -2,15 +2,16 @@ import sharp from "sharp"
 import { readdirSync, renameSync } from "fs"
 import { join, extname } from "path"
 
-const bgDir = join(import.meta.dirname, "../public/backgrounds")
-const files = readdirSync(bgDir)
+const srcDir = join(import.meta.dirname, "../public/backgrounds-raw")
+const outDir = join(import.meta.dirname, "../public/backgrounds")
+const files = readdirSync(srcDir)
 
 for (const file of files) {
 	const ext = extname(file).toLowerCase()
 	if (![".png", ".jpg", ".jpeg"].includes(ext)) continue
 
-	const input = join(bgDir, file)
-	const tmp = join(bgDir, `_tmp_${file}`)
+	const input = join(srcDir, file)
+	const output = join(outDir, file)
 
 	let img = sharp(input)
 
@@ -20,8 +21,7 @@ for (const file of files) {
 		img = img.jpeg({ quality: 80, mozjpeg: true })
 	}
 
-	await img.toFile(tmp)
-	renameSync(tmp, input)
+	await img.toFile(output)
 	console.log(`  compressed: ${file}`)
 }
 
