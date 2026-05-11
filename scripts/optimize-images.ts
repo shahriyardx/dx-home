@@ -2,7 +2,7 @@ import sharp from "sharp"
 import { readdirSync, renameSync } from "fs"
 import { join, extname } from "path"
 
-const bgDir = new URL("../public/backgrounds", import.meta.url).pathname
+const bgDir = join(import.meta.dirname, "../public/backgrounds")
 const files = readdirSync(bgDir)
 
 for (const file of files) {
@@ -15,7 +15,7 @@ for (const file of files) {
 	let img = sharp(input)
 
 	if (ext === ".png") {
-		img = img.png({ compressionLevel: 9, quality: 80 })
+		img = img.png({ compressionLevel: 9, quality: 85 })
 	} else {
 		img = img.jpeg({ quality: 80, mozjpeg: true })
 	}
