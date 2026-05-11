@@ -1,66 +1,50 @@
 import { cn } from "@/lib/utils"
 import { useState, useEffect } from "react"
 
-const BG = "#0a0a0a"
-
 const Clock = () => {
 	const [clockOnly, setClockOnly] = useState(false)
-	const [currentTime, setCurrentTime] = useState(new Date())
+	const [now, setNow] = useState(new Date())
 
 	useEffect(() => {
-		const timerId = setInterval(() => {
-			setCurrentTime(new Date())
-		}, 1000)
-
-		return () => clearInterval(timerId)
+		const id = setInterval(() => setNow(new Date()), 1000)
+		return () => clearInterval(id)
 	}, [])
 
-	const formatTime = (date: Date, showSeconds: boolean = false) => {
-		let hours = date.getHours()
-		const minutes = date.getMinutes()
-		const ampm = hours >= 12 ? "PM" : "AM"
-		hours = hours % 12
-		hours = hours ? hours : 12
-		const h = hours < 10 ? `0${hours}` : hours
-		const m = minutes < 10 ? `0${minutes}` : minutes
-		const s = showSeconds
-			? `:${String(date.getSeconds()).padStart(2, "0")}`
-			: ""
-		return `${h}:${m}${s} ${clockOnly ? "" : ampm}`
-	}
+	const h = now.getHours()
+	const h12 = h % 12 || 12
+	const mm = String(now.getMinutes()).padStart(2, "0")
+	const ampm = h >= 12 ? "PM" : "AM"
 
-	const formatDate = (date: Date) => {
-		return date.toLocaleDateString(undefined, {
-			weekday: "long",
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-		})
-	}
+	const time = clockOnly
+		? `${String(h12).padStart(2, "0")}:${mm}:${String(now.getSeconds()).padStart(2, "0")}`
+		: `${h12}:${mm}`
 
 	return (
 		<div
-			onClick={() => setClockOnly((val) => !val)}
+			onClick={() => setClockOnly((v) => !v)}
 			className={cn(
 				"cursor-pointer select-none transition-opacity duration-500",
 				clockOnly &&
-					"flex flex-col justify-center items-center fixed inset-0 z-50",
+					"flex flex-col justify-center items-center fixed inset-0 z-50 backdrop-blur-3xl",
 			)}
-			style={clockOnly ? { background: BG } : {}}
 		>
 			<h1
 				className={cn(
-					"font-bold tracking-tight text-foreground",
-					clockOnly ? "text-[min(18vw,8rem)]" : "text-7xl lg:text-8xl",
+					"font-bold tracking-tight text-foreground tabular-nums",
+					clockOnly ? "text-[min(18vw,8rem)] leading-none" : "text-7xl lg:text-8xl",
 				)}
 			>
-				{formatTime(currentTime, clockOnly)}
+				{time}
+				{!clockOnly && <span className="text-foreground/50 ms-2">{ampm}</span>}
 			</h1>
-			{!clockOnly && (
-				<p className="mt-1 text-sm text-muted-foreground">
-					{formatDate(currentTime)}
-				</p>
-			)}
+			<p className="mt-1 text-sm text-muted-foreground">
+				{now.toLocaleDateString(undefined, {
+					weekday: "long",
+					year: "numeric",
+					month: "long",
+					day: "numeric",
+				})}
+			</p>
 		</div>
 	)
 }
