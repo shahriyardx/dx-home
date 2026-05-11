@@ -8,14 +8,10 @@ import {
 	Card,
 	CardHeader,
 	CardTitle,
+	CardAction,
 	CardDescription,
 } from "@/components/ui/card"
-import {
-	ContextMenu,
-	ContextMenuContent,
-	ContextMenuItem,
-	ContextMenuTrigger,
-} from "@/components/ui/context-menu"
+import { Button } from "@/components/ui/button"
 import {
 	Dialog,
 	DialogContent,
@@ -68,65 +64,66 @@ const SingleTask = ({ task }: Props) => {
 
 	return (
 		<>
-			<ContextMenu>
-				<ContextMenuTrigger>
-					<Card
-						size="sm"
-						className={"bg-secondary/2 backdrop-blur-2xl border"}
-					>
-						<CardHeader>
-							<CardTitle>
-								<p className="text-xs font-mono">
-									{hasDeadline ? (
-										<>
-											<span className={cn(urgencyColor)}>{countdown}</span>
-											<span className="mx-1 text-muted-foreground/40">
-												&middot;
-											</span>
-											<span className="font-normal text-muted-foreground">
-												{moment(deadline).format("MMM D, h:mm A")}
-											</span>
-										</>
-									) : (
-										<span className="text-muted-foreground">
-											Created {moment(task.createdAt).fromNow()}
-										</span>
-									)}
-								</p>
-								<p className="text-lg">{task.title}</p>
-							</CardTitle>
-							{task.description && (
-								<CardDescription
-									className="cursor-pointer"
-									onClick={() => setDescExpanded((prev) => !prev)}
-								>
-									<p
-										className={cn(
-											"text-muted-foreground text-xs",
-											!descExpanded && "line-clamp-1",
-										)}
-									>
-										{task.description}
-									</p>
-								</CardDescription>
+			<Card
+				size="sm"
+				className="group bg-secondary/2 backdrop-blur-2xl border"
+			>
+				<CardHeader>
+					<CardTitle>
+						<p className="text-xs font-mono">
+							{hasDeadline ? (
+								<>
+									<span className={cn(urgencyColor)}>{countdown}</span>
+									<span className="mx-1 text-muted-foreground/40">
+										&middot;
+									</span>
+									<span className="font-normal text-muted-foreground">
+										{moment(deadline).format("MMM D, h:mm A")}
+									</span>
+								</>
+							) : (
+								<span className="text-muted-foreground">
+									Created {moment(task.createdAt).fromNow()}
+								</span>
 							)}
-						</CardHeader>
-					</Card>
-				</ContextMenuTrigger>
-				<ContextMenuContent>
-					<ContextMenuItem onMouseDown={() => setEditOpen(true)}>
-						<Pencil className="size-3.5 mr-2" />
-						Edit
-					</ContextMenuItem>
-					<ContextMenuItem
-						variant="destructive"
-						onMouseDown={() => deleteTask(task.id)}
-					>
-						<Trash className="size-3.5 mr-2" />
-						Delete
-					</ContextMenuItem>
-				</ContextMenuContent>
-			</ContextMenu>
+						</p>
+						<p className="text-lg">{task.title}</p>
+					</CardTitle>
+					<CardAction>
+						<div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+							<Button
+								variant="outline"
+								size="icon-xs"
+								onClick={() => setEditOpen(true)}
+							>
+								<Pencil size={12} />
+							</Button>
+							<Button
+								variant="destructive"
+								size="icon-xs"
+								onClick={() => deleteTask(task.id)}
+							>
+								<Trash size={12} />
+							</Button>
+						</div>
+					</CardAction>
+					{task.description && (
+						<CardDescription
+							className="cursor-pointer"
+							onClick={() => setDescExpanded((prev) => !prev)}
+						>
+							<p
+								className={cn(
+									"text-muted-foreground text-xs",
+									!descExpanded && "line-clamp-1",
+								)}
+							>
+								{task.description}
+							</p>
+						</CardDescription>
+					)}
+				</CardHeader>
+			</Card>
 
 			<Dialog open={editOpen} onOpenChange={setEditOpen}>
 				<DialogContent>
