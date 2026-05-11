@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 
 const STORAGE_KEY = "dx-background"
+const CUSTOM_KEY = "dx-background-custom"
 
 export interface BackgroundPreset {
 	id: string
@@ -37,9 +38,19 @@ export const PRESETS: BackgroundPreset[] = [
 
 export function useBackground() {
 	const [active, setActive] = useState<BackgroundPreset>(PRESETS[0])
+	const [customBg, setCustomBg] = useState<string | null>(null)
+
+	const current: BackgroundPreset = customBg
+		? { id: "custom", name: "Custom", type: "image", value: customBg }
+		: active
 
 	useEffect(() => {
-		chrome.storage.local.get(STORAGE_KEY).then((res) => {
+		chrome.storage.local.get([STORAGE_KEY, CUSTOM_KEY]).then((res) => {
+			const custom = res[CUSTOM_KEY] as string | undefined
+			if (custom) {
+				setCustomBg(custom)
+				return
+			}
 			const saved = res[STORAGE_KEY] as string | undefined
 			if (saved) {
 				const found = PRESETS.find((p) => p.id === saved)
@@ -48,10 +59,16 @@ export function useBackground() {
 		})
 
 		const handler = (changes: Record<string, chrome.storage.StorageChange>) => {
+			if (changes[CUSTOM_KEY]) {
+				const url = changes[CUSTOM_KEY].newValue as string | undefined
+				setCustomBg(url || null)
+				return
+			}
 			if (changes[STORAGE_KEY]) {
 				const id = changes[STORAGE_KEY].newValue as string | undefined
 				const found = PRESETS.find((p) => p.id === id)
 				if (found) setActive(found)
+				setCustomBg(null)
 			}
 		}
 		chrome.storage.onChanged.addListener(handler)
@@ -60,8 +77,14 @@ export function useBackground() {
 
 	const setBackground = (preset: BackgroundPreset) => {
 		setActive(preset)
-		chrome.storage.local.set({ [STORAGE_KEY]: preset.id })
+		setCustomBg(null)
+		chrome.storage.local.set({ [STORAGE_KEY]: preset.id, [CUSTOM_KEY]: null })
 	}
 
-	return { active, setBackground }
+	const setCustomBackground = (url: string) => {
+		setCustomBg(url)
+		chrome.storage.local.set({ [CUSTOM_KEY]: url })
+	}
+
+	return { active: current, setBackground, setCustomBackground }
 }
