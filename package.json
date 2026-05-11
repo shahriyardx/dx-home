@@ -13,7 +13,7 @@
 		"dev:firefox": "wxt -b firefox",
 		"build": "wxt build",
 		"build:firefox": "wxt build -b firefox",
-		"zip": "bun ./src/generate-icons.ts && wxt zip",
+		"zip": "bun ./scripts/generate-icons.ts && bun ./scripts/optimize-images.ts && wxt zip",
 		"zip:firefox": "wxt zip -b firefox",
 		"compile": "tsc --noEmit",
 		"postinstall": "wxt prepare",
