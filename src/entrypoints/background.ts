@@ -11,6 +11,31 @@ export type Tab = {
 export default defineBackground(() => {
 	const openTabs: Record<number, chrome.tabs.Tab> = {}
 
+	// Open sidepanel on action icon click
+	chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
+
+	// Context menu for saving to reading list
+	chrome.contextMenus.create({
+		id: "save-reading-list",
+		title: "Save to Reading List",
+		contexts: ["page", "link"],
+	})
+
+	chrome.contextMenus.onClicked.addListener(async (info) => {
+		if (info.menuItemId === "save-reading-list") {
+			const url = info.linkUrl || info.pageUrl
+			if (!url) return
+			const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+			await db.readinglist.add({
+				title: info.selectionText || tab?.title || url,
+				url,
+				icon: tab?.favIconUrl || "",
+				read: false,
+				savedAt: new Date(),
+			})
+		}
+	})
+
 	chrome.alarms.onAlarm.addListener((alarm) => {
 		const task = JSON.parse(alarm.name) as Task & { type: "due" | "5m" }
 		const msg = task.type === "due" ? "past due" : "due in 5 minutes"
