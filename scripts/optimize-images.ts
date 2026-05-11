@@ -2,7 +2,7 @@ import sharp from "sharp"
 import { readdirSync, renameSync } from "fs"
 import { join, extname } from "path"
 
-const srcDir = join(import.meta.dirname, "../public/backgrounds-raw")
+const srcDir = join(import.meta.dirname, "../backgrounds-raw")
 const outDir = join(import.meta.dirname, "../public/backgrounds")
 const files = readdirSync(srcDir)
 
