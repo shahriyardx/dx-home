@@ -5,7 +5,6 @@ import SingleTask from "./single-task"
 import { Dialog, DialogContent, DialogHeader } from "../ui/dialog"
 import { DialogTrigger } from "@radix-ui/react-dialog"
 import TaskForm from "./task-form"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar"
 import { Plus, CalendarDays, ListTodo, Trash2 } from "lucide-react"
 const Tasks = () => {
