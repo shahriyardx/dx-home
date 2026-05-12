@@ -90,9 +90,9 @@ const Tasks = () => {
 					))}
 				</div>
 			) : (
-				<div className="space-y-4 px-6">
+				<div className="space-y-4 ">
 					<Calendar
-						className="w-full bg-transparent border rounded-lg"
+						className="w-full bg-transparent border-t"
 						modifiers={{ hasTask: datesWithTasks }}
 						mode="single"
 						selected={selectedDate}
@@ -112,7 +112,7 @@ const Tasks = () => {
 						}}
 					/>
 					{selectedTasks.length > 0 && (
-						<div className="space-y-2 pb-2">
+						<div className="space-y-2 pb-2 border-t p-6">
 							<p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 								{selectedDate?.toLocaleDateString(undefined, {
 									weekday: "short",
