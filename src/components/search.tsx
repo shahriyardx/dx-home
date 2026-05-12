@@ -15,10 +15,7 @@ const SearchBar = () => {
 			const url = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`
 			window.open(url, "_blank")
 		} else {
-			window.open(
-				`https://www.google.com/search?q=${encodeURIComponent(trimmed)}`,
-				"_blank",
-			)
+			chrome.search.query({ text: trimmed, disposition: "NEW_TAB" })
 		}
 	}
 

@@ -87,12 +87,6 @@ export const useTasks = () => {
 		await writeTasks(existing)
 		setTasks(sortTasks(existing))
 
-		if (values.deadline) {
-			chrome.runtime.sendMessage({
-				type: "schedule-task",
-				task: { ...values, id: task.id },
-			})
-		}
 	}, [])
 
 	const updateTask = useCallback(async (id: string, values: TaskType) => {
@@ -109,13 +103,6 @@ export const useTasks = () => {
 		await writeTasks(existing)
 		setTasks(sortTasks(existing))
 
-		chrome.runtime.sendMessage({ type: "delete-task", task_id: id })
-		if (values.deadline) {
-			chrome.runtime.sendMessage({
-				type: "schedule-task",
-				task: { ...values, id },
-			})
-		}
 	}, [])
 
 	const deleteTask = useCallback(async (id: string) => {
@@ -123,7 +110,7 @@ export const useTasks = () => {
 		const filtered = existing.filter((t) => t.id !== id)
 		await writeTasks(filtered)
 		setTasks(sortTasks(filtered))
-		chrome.runtime.sendMessage({ type: "delete-task", task_id: id })
+
 	}, [])
 
 	return { tasks, addTask, updateTask, deleteTask }
