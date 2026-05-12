@@ -31,11 +31,16 @@ const SingleTab = ({ tab }: Props) => {
 			<ContextMenuTrigger>
 				<div
 					className={cn(
-						"bg-secondary/50 rounded-md p-2 border",
+						"bg-secondary/50 rounded-md p-2 border cursor-pointer transition-all",
 						"grid grid-cols-[1.25rem_auto] gap-2",
+						"hover:backdrop-blur-2xl hover:border-primary",
 					)}
 				>
-					<Favicon url={tab.url} size={20} className="w-5 h-5 object-cover shrink-0 rounded-md" />
+					<Favicon
+						url={tab.url}
+						size={20}
+						className="w-5 h-5 object-cover shrink-0 rounded-md"
+					/>
 
 					<a
 						href={tab.url}

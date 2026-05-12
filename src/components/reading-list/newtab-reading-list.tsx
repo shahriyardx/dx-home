@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useReadingList } from "@/hooks/useReadingList"
 import { Check, BookOpen, ChevronLeft, ChevronRight } from "lucide-react"
 import { Favicon } from "@/components/favicon"
+import { cn } from "@/lib/utils"
 
 function formatHostname(url: string): string {
 	try {
@@ -62,7 +63,11 @@ export function NewtabReadingList() {
 				{pageItems.map((item) => (
 					<div
 						key={item.id}
-						className="bg-secondary/50 rounded-md p-2 border grid grid-cols-[1.25rem_auto] gap-2 min-w-0"
+						className={cn(
+							"bg-secondary/50 rounded-md p-2 border cursor-pointer transition-all",
+							"grid grid-cols-[1.25rem_auto] gap-2",
+							"hover:backdrop-blur-2xl hover:border-primary",
+						)}
 					>
 						{item.read ? (
 							<div className="size-5 shrink-0 rounded flex items-center justify-center bg-primary/10 text-primary">
@@ -71,7 +76,11 @@ export function NewtabReadingList() {
 						) : item.icon ? (
 							<img src={item.icon} alt="" className="size-5 shrink-0 rounded" />
 						) : (
-							<Favicon url={item.url} size={20} className="size-5 shrink-0 rounded" />
+							<Favicon
+								url={item.url}
+								size={20}
+								className="size-5 shrink-0 rounded"
+							/>
 						)}
 						<a
 							href={item.url}
