@@ -6,6 +6,7 @@ import SearchBar from "@/components/search"
 import { useBackground } from "@/hooks/useBackground"
 import { useNewtabSettings } from "@/hooks/useNewtabSettings"
 import { NewtabReadingList } from "@/components/reading-list/newtab-reading-list"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 const App = () => {
 	const { active: bg } = useBackground()
@@ -45,7 +46,9 @@ const App = () => {
 			{settings.showTasks && (
 				<div className="max-lg:hidden lg:h-screen bg-secondary/10 backdrop-blur-xl">
 					<div className="h-full border-l">
-						<Tasks />
+						<ScrollArea className="h-screen overflow-hidden">
+							<Tasks />
+						</ScrollArea>
 					</div>
 				</div>
 			)}
