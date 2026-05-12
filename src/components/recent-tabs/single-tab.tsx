@@ -1,5 +1,6 @@
 import type { ClosedTab } from "@/lib/db"
-import { cn, urlToFavicon } from "@/lib/utils"
+import { cn } from "@/lib/utils"
+import { Favicon } from "@/components/favicon"
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -34,11 +35,7 @@ const SingleTab = ({ tab }: Props) => {
 						"grid grid-cols-[1.25rem_auto] gap-2",
 					)}
 				>
-					<img
-						src={urlToFavicon(tab.url)}
-						alt=""
-						className="w-5 h-5 object-cover shrink-0 rounded-md"
-					/>
+					<Favicon url={tab.url} size={20} className="w-5 h-5 object-cover shrink-0 rounded-md" />
 
 					<a
 						href={tab.url}

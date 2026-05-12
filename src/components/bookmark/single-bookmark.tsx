@@ -20,7 +20,8 @@ import {
 import BookmarkForm from "./bookmark-form"
 import { bookmarkSchema, type BookmarkType } from "."
 import { useBookmarks } from "@/hooks/useBookmarks"
-import { urlToFavicon } from "@/lib/utils"
+
+import { Favicon } from "../favicon"
 
 const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 	const [open, setOpen] = useState(false)
@@ -46,11 +47,7 @@ const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 							href={bookmark.url}
 							className="w-12 h-12 border rounded-md bg-secondary/50 grid place-items-center"
 						>
-							<img
-								src={urlToFavicon(bookmark.url)}
-								alt=""
-								className="w-5 h-5"
-							/>
+							<Favicon url={bookmark.url} size={20} className="w-5 h-5" />
 						</a>
 					</div>
 				</ContextMenuTrigger>

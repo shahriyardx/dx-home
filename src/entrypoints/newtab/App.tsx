@@ -7,7 +7,8 @@ import SearchBar from "@/components/search"
 import { useBackground } from "@/hooks/useBackground"
 import { useReadingList } from "@/hooks/useReadingList"
 import { Check, BookOpen, ChevronLeft, ChevronRight } from "lucide-react"
-import { urlToFavicon } from "@/lib/utils"
+import { Favicon } from "@/components/favicon"
+
 import { useNewtabSettings } from "@/hooks/useNewtabSettings"
 
 function formatHostname(url: string): string {
@@ -21,7 +22,7 @@ function formatHostname(url: string): string {
 	}
 }
 
-	const PAGE_SIZE = 5
+const PAGE_SIZE = 5
 
 function NewtabReadingList() {
 	const { items } = useReadingList()
@@ -60,17 +61,20 @@ function NewtabReadingList() {
 							<div className="size-4 shrink-0 rounded flex items-center justify-center bg-primary/10 text-primary">
 								<Check className="size-3" />
 							</div>
+						) : item.icon ? (
+							<img src={item.icon} alt="" className="size-4 shrink-0 rounded" />
 						) : (
-							<img
-								src={
-									item.icon || urlToFavicon(item.url)
-								}
-								alt=""
-								className="size-4 shrink-0 rounded"
-							/>
+							<Favicon url={item.url} size={16} className="size-4 shrink-0 rounded" />
 						)}
 						<div className="min-w-0 flex-1">
-							<p className={"truncate text-xs " + (item.read ? "text-muted-foreground/50 line-through" : "text-foreground/80 group-hover:text-foreground")}>
+							<p
+								className={
+									"truncate text-xs " +
+									(item.read
+										? "text-muted-foreground/50 line-through"
+										: "text-foreground/80 group-hover:text-foreground")
+								}
+							>
 								{item.title}
 							</p>
 							<p className="text-[10px] text-muted-foreground truncate">
@@ -117,12 +121,12 @@ const App = () => {
 					backgroundImage: `url(${bg.value})`,
 					backgroundSize: "cover" as const,
 					backgroundPosition: "center" as const,
-			  }
+				}
 			: {
 					background: bg.value,
 					backgroundSize: "cover" as const,
 					backgroundPosition: "center" as const,
-			  }
+				}
 
 	return (
 		<div

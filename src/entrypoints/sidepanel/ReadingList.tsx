@@ -1,6 +1,7 @@
 import { useReadingList } from "@/hooks/useReadingList"
 import { BookOpen, Check, Trash2 } from "lucide-react"
-import { cn, urlToFavicon } from "@/lib/utils"
+import { Favicon } from "@/components/favicon"
+import { cn } from "@/lib/utils"
 import { useState } from "react"
 
 type Filter = "all" | "unread" | "read"
@@ -55,11 +56,11 @@ export function ReadingListView() {
 								item.read && "opacity-50",
 							)}
 						>
-							<img
-								src={item.icon || urlToFavicon(item.url)}
-								alt=""
-								className="size-3.5 shrink-0 rounded"
-							/>
+								{item.icon ? (
+									<img src={item.icon} alt="" className="size-3.5 shrink-0 rounded" />
+								) : (
+									<Favicon url={item.url} size={14} className="size-3.5 shrink-0 rounded" />
+								)}
 							<button
 								type="button"
 								className="flex-1 truncate text-left text-xs cursor-pointer"
