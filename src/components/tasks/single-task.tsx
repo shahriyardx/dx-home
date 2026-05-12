@@ -87,7 +87,7 @@ const SingleTask = ({ task }: Props) => {
 								</span>
 							)}
 						</p>
-						<p className="text-lg">{task.title}</p>
+						<p className="text-sm">{task.title}</p>
 					</CardTitle>
 					<CardAction>
 						<div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
