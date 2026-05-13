@@ -2,22 +2,11 @@ import { useState, useEffect } from "react"
 import { useReadingList } from "@/hooks/useReadingList"
 import { Check, BookOpen, ChevronLeft, ChevronRight } from "lucide-react"
 import { Favicon } from "@/components/favicon"
-import { cn } from "@/lib/utils"
-
-function formatHostname(url: string): string {
-	try {
-		const parsed = new URL(url)
-		const hasExtra =
-			parsed.pathname !== "/" || parsed.search !== "" || parsed.hash !== ""
-		return hasExtra ? `${parsed.hostname}/...` : parsed.hostname
-	} catch {
-		return url
-	}
-}
+import { LinkCard } from "@/components/link-card"
 
 const PAGE_SIZE = 10
 
-export function NewtabReadingList() {
+export function NewtabReadingList({ tabbed }: { tabbed?: boolean }) {
 	const { items } = useReadingList()
 	const [page, setPage] = useState(0)
 	const totalPages = Math.ceil(items.length / PAGE_SIZE)
@@ -31,10 +20,14 @@ export function NewtabReadingList() {
 	return (
 		<div>
 			<div className="flex items-center gap-2 mb-2">
-				<BookOpen className="size-3.5 text-muted-foreground" />
-				<h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-					Reading List
-				</h3>
+				{!tabbed && (
+					<>
+						<BookOpen className="size-3.5 text-muted-foreground" />
+						<h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+							Reading List
+						</h3>
+					</>
+				)}
 				{totalPages > 1 && (
 					<div className="flex items-center gap-1 ml-auto">
 						<button
@@ -61,49 +54,27 @@ export function NewtabReadingList() {
 			</div>
 			<div className="flex items-center gap-1.5 flex-wrap">
 				{pageItems.map((item) => (
-					<div
+					<LinkCard
 						key={item.id}
-						className={cn(
-							"bg-secondary/50 rounded-md p-2 border cursor-pointer transition-all",
-							"grid grid-cols-[1.25rem_auto] gap-2",
-							"hover:backdrop-blur-2xl hover:border-primary",
-						)}
-					>
-						{item.read ? (
-							<div className="size-5 shrink-0 rounded flex items-center justify-center bg-primary/10 text-primary">
-								<Check className="size-3" />
-							</div>
-						) : item.icon ? (
-							<img src={item.icon} alt="" className="size-5 shrink-0 rounded" />
-						) : (
-							<Favicon
-								url={item.url}
-								size={20}
-								className="size-5 shrink-0 rounded"
-							/>
-						)}
-						<a
-							href={item.url}
-							target="_blank"
-							rel="noreferrer"
-							className="min-w-0 flex-1"
-							title={item.title}
-						>
-							<p
-								className={
-									"truncate text-xs max-w-[20ch] " +
-									(item.read
-										? "text-muted-foreground/50 line-through"
-										: "text-foreground/80")
-								}
-							>
-								{item.title}
-							</p>
-							<p className="text-[10px] text-muted-foreground truncate">
-								{formatHostname(item.url)}
-							</p>
-						</a>
-					</div>
+						icon={
+							item.read ? (
+								<div className="size-5 shrink-0 rounded flex items-center justify-center bg-primary/10 text-primary">
+									<Check className="size-3" />
+								</div>
+							) : item.icon ? (
+								<img src={item.icon} alt="" className="size-5 shrink-0 rounded" />
+							) : (
+								<Favicon
+									url={item.url}
+									size={20}
+									className="size-5 shrink-0 rounded"
+								/>
+							)
+						}
+						title={item.title}
+						url={item.url}
+						read={item.read}
+					/>
 				))}
 			</div>
 		</div>

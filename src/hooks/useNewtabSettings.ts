@@ -17,7 +17,7 @@ const DEFAULTS: NewtabSettings = {
 	showBookmarks: true,
 	showRecentTabs: true,
 	showTasks: true,
-	showReadingList: false,
+	showReadingList: true,
 }
 
 export function useNewtabSettings() {

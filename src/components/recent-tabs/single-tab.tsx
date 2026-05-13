@@ -1,23 +1,13 @@
 import type { ClosedTab } from "@/lib/db"
-import { cn } from "@/lib/utils"
 import { Favicon } from "@/components/favicon"
+import { LinkCard } from "@/components/link-card"
 import {
 	ContextMenu,
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-
-function formatUrl(url: string): string {
-	try {
-		const parsed = new URL(url)
-		const hasExtra =
-			parsed.pathname !== "/" || parsed.search !== "" || parsed.hash !== ""
-		return hasExtra ? `${parsed.hostname}/...` : parsed.hostname
-	} catch {
-		return url
-	}
-}
+import useRecentTabs from "@/hooks/useRecentTabs"
 
 type Props = {
 	tab: ClosedTab
@@ -29,34 +19,17 @@ const SingleTab = ({ tab }: Props) => {
 	return (
 		<ContextMenu key={tab.id}>
 			<ContextMenuTrigger>
-				<div
-					className={cn(
-						"bg-secondary/50 rounded-md p-2 border cursor-pointer transition-all",
-						"grid grid-cols-[1.25rem_auto] gap-2",
-						"hover:backdrop-blur-2xl hover:border-primary",
-					)}
-				>
-					<Favicon
-						url={tab.url}
-						size={20}
-						className="w-5 h-5 object-cover shrink-0 rounded-md"
-					/>
-
-					<a
-						href={tab.url}
-						target="_blank"
-						rel="noreferrer"
-						className="min-w-0 flex-1"
-						title={tab.title}
-					>
-						<p className="text-xs text-foreground/80 max-w-[20ch] truncate">
-							{tab.title}
-						</p>
-						<p className="text-[10px] text-muted-foreground">
-							{formatUrl(tab.url)}
-						</p>
-					</a>
-				</div>
+				<LinkCard
+					icon={
+						<Favicon
+							url={tab.url}
+							size={20}
+							className="w-5 h-5 object-cover shrink-0 rounded-md"
+						/>
+					}
+					title={tab.title}
+					url={tab.url}
+				/>
 			</ContextMenuTrigger>
 			<ContextMenuContent>
 				<ContextMenuItem
