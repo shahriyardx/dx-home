@@ -52,9 +52,9 @@ const App = () => {
 					<>
 						<ResizableHandle className="max-lg:hidden" />
 						<ResizablePanel
-							defaultSize={33.3}
-							minSize="300px"
-							maxSize="700px"
+							defaultSize="800px"
+							minSize="500px"
+							maxSize="900px"
 							className="max-lg:hidden"
 						>
 							<RightPanel />
