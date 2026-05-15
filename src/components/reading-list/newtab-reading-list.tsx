@@ -15,7 +15,7 @@ export function NewtabReadingList({ tabbed }: { tabbed?: boolean }) {
 	useEffect(() => {
 		if (page >= totalPages) setPage(Math.max(0, totalPages - 1))
 	}, [page, totalPages])
-	if (items.length === 0) return null
+	if (items.length === 0) return <p className="text-xs text-muted-foreground/60">Reading list empty</p>
 
 	return (
 		<div>

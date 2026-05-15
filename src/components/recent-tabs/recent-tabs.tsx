@@ -9,7 +9,7 @@ const RecentTabs = ({ tabbed }: { tabbed?: boolean }) => {
 
 	return (
 		<>
-			{tabs.length > 0 && (
+			{tabs.length > 0 ? (
 				<div>
 					{!tabbed && (
 						<div className="flex items-center gap-2 mb-2">
@@ -25,6 +25,8 @@ const RecentTabs = ({ tabbed }: { tabbed?: boolean }) => {
 						))}
 					</div>
 				</div>
+			) : (
+				<p className="text-xs text-muted-foreground/60">Your recently closed tabs will appear here</p>
 			)}
 		</>
 	)
