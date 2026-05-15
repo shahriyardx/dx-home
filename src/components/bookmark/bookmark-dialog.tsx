@@ -14,7 +14,7 @@ import type { DialogProps } from "@radix-ui/react-dialog"
 import { useForm } from "react-hook-form"
 import BookmarkForm from "./bookmark-form"
 import { bookmarkSchema, type BookmarkType } from "."
-import { useBookmarks } from "@/hooks/useBookmarks"
+import { useBookmarks } from "@/hooks/use-bookmarks"
 
 export function BookmarkDialog({ children }: DialogProps) {
 	const [open, setOpen] = useState(false)

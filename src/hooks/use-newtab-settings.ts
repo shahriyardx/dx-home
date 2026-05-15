@@ -7,7 +7,7 @@ export interface NewtabSettings {
 	showSearch: boolean
 	showBookmarks: boolean
 	showRecentTabs: boolean
-	showTasks: boolean
+	showRightPanel: boolean
 	showReadingList: boolean
 }
 
@@ -16,7 +16,7 @@ const DEFAULTS: NewtabSettings = {
 	showSearch: true,
 	showBookmarks: true,
 	showRecentTabs: true,
-	showTasks: true,
+	showRightPanel: true,
 	showReadingList: true,
 }
 

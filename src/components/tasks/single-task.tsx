@@ -1,7 +1,7 @@
 import moment from "moment"
-import type { Task } from "@/hooks/useTasks"
+import type { Task } from "@/contexts/tasks-context"
 import { Pencil, Trash } from "lucide-react"
-import { useTasks } from "@/hooks/useTasks"
+import { useTasksContext } from "@/contexts/tasks-context"
 import { useEffect, useState, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import {
@@ -25,7 +25,7 @@ type Props = {
 }
 
 const SingleTask = ({ task }: Props) => {
-	const { deleteTask, updateTask } = useTasks()
+	const { deleteTask, updateTask } = useTasksContext()
 	const [editOpen, setEditOpen] = useState(false)
 	const [descExpanded, setDescExpanded] = useState(false)
 	const [countdown, setCountdown] = useState("")
@@ -64,10 +64,7 @@ const SingleTask = ({ task }: Props) => {
 
 	return (
 		<>
-			<Card
-				size="sm"
-				className="group bg-secondary/2 backdrop-blur-2xl border"
-			>
+			<Card size="sm" className="group bg-secondary/2 backdrop-blur-2xl border">
 				<CardHeader>
 					<CardTitle>
 						<p className="text-xs font-mono">

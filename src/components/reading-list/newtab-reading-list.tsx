@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useReadingList } from "@/hooks/useReadingList"
+import { useReadingList } from "@/hooks/use-reading-list"
 import { Check, BookOpen, ChevronLeft, ChevronRight } from "lucide-react"
 import { Favicon } from "@/components/favicon"
 import { LinkCard } from "@/components/link-card"
@@ -62,7 +62,11 @@ export function NewtabReadingList({ tabbed }: { tabbed?: boolean }) {
 									<Check className="size-3" />
 								</div>
 							) : item.icon ? (
-								<img src={item.icon} alt="" className="size-5 shrink-0 rounded" />
+								<img
+									src={item.icon}
+									alt=""
+									className="size-5 shrink-0 rounded"
+								/>
 							) : (
 								<Favicon
 									url={item.url}

@@ -1,4 +1,7 @@
-import { useNewtabSettings, type NewtabSettings } from "@/hooks/useNewtabSettings"
+import {
+	useNewtabSettings,
+	type NewtabSettings,
+} from "@/hooks/use-newtab-settings"
 import { cn } from "@/lib/utils"
 
 type Section = {
@@ -12,14 +15,15 @@ const SECTIONS: Section[] = [
 	{ key: "showSearch", label: "Search Bar", desc: "Search and calculator" },
 	{ key: "showBookmarks", label: "Bookmarks", desc: "Saved site shortcuts" },
 	{ key: "showRecentTabs", label: "Recent Tabs", desc: "Recently closed tabs" },
-	{ key: "showTasks", label: "Tasks", desc: "Todo list with reminders" },
+	{
+		key: "showRightPanel",
+		label: "Right Panel",
+		desc: "Right sidebar content",
+	},
 	{ key: "showReadingList", label: "Reading List", desc: "Saved pages" },
 ]
 
-function Toggle({
-	on,
-	onToggle,
-}: { on: boolean; onToggle: () => void }) {
+function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
 	return (
 		<button
 			type="button"
@@ -60,7 +64,9 @@ export function SettingsView() {
 						</div>
 						<Toggle
 							on={settings[section.key]}
-							onToggle={() => updateSetting(section.key, !settings[section.key])}
+							onToggle={() =>
+								updateSetting(section.key, !settings[section.key])
+							}
 						/>
 					</div>
 				))}

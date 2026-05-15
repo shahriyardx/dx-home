@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/context-menu"
 import BookmarkForm from "./bookmark-form"
 import { bookmarkSchema, type BookmarkType } from "."
-import { useBookmarks } from "@/hooks/useBookmarks"
+import { useBookmarks } from "@/hooks/use-bookmarks"
 
 import { Favicon } from "../favicon"
 

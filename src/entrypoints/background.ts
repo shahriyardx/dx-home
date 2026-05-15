@@ -1,5 +1,5 @@
 import { db } from "@/lib/db"
-import type { Task } from "@/hooks/useTasks"
+import type { Task } from "@/contexts/tasks-context"
 import { defineBackground } from "wxt/utils/define-background"
 import { createId } from "@paralleldrive/cuid2"
 
@@ -47,7 +47,10 @@ export default defineBackground(() => {
 		if (info.menuItemId === "save-reading-list") {
 			const url = info.linkUrl || info.pageUrl
 			if (!url) return
-			const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+			const [tab] = await chrome.tabs.query({
+				active: true,
+				currentWindow: true,
+			})
 			await db.readinglist.add({
 				title: info.selectionText || tab?.title || url,
 				url,
@@ -61,11 +64,16 @@ export default defineBackground(() => {
 			await chrome.storage.local.set({ "dx-background-custom": info.srcUrl })
 		}
 		if (info.menuItemId === "add-task") {
-			const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+			const [tab] = await chrome.tabs.query({
+				active: true,
+				currentWindow: true,
+			})
 			const title = info.linkUrl
-				? ((info as any).linkText || info.linkUrl)
-				: (info.selectionText || tab?.title || "Untitled task")
-			const raw = (await chrome.storage.sync.get("dx-tasks"))["dx-tasks"] as Task[] | undefined
+				? (info as any).linkText || info.linkUrl
+				: info.selectionText || tab?.title || "Untitled task"
+			const raw = (await chrome.storage.sync.get("dx-tasks"))["dx-tasks"] as
+				| Task[]
+				| undefined
 			const existing = raw || []
 			existing.push({
 				id: createId(),
@@ -78,7 +86,10 @@ export default defineBackground(() => {
 		}
 
 		if (info.menuItemId === "bookmark-page") {
-			const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+			const [tab] = await chrome.tabs.query({
+				active: true,
+				currentWindow: true,
+			})
 			if (tab?.title && tab.url) {
 				await db.bookmarks.add({ label: tab.title, url: tab.url })
 			}

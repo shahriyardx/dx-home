@@ -7,7 +7,7 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-import useRecentTabs from "@/hooks/useRecentTabs"
+import useRecentTabs from "@/hooks/use-recent-tabs"
 
 type Props = {
 	tab: ClosedTab

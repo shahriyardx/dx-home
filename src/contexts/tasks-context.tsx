@@ -1,4 +1,11 @@
-import { useState, useEffect, useCallback } from "react"
+import {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useCallback,
+	type ReactNode,
+} from "react"
 import { createId } from "@paralleldrive/cuid2"
 import type { TaskType } from "@/components/tasks"
 
@@ -10,6 +17,15 @@ export interface Task {
 	deadline?: Date
 	createdAt: Date
 }
+
+interface TasksContextValue {
+	tasks: Task[]
+	addTask: (values: TaskType) => Promise<void>
+	updateTask: (id: string, values: TaskType) => Promise<void>
+	deleteTask: (id: string) => Promise<void>
+}
+
+const TasksContext = createContext<TasksContextValue | null>(null)
 
 const STORAGE_KEY = "dx-tasks"
 
@@ -45,7 +61,7 @@ function sortTasks(tasks: Task[]): Task[] {
 	})
 }
 
-export const useTasks = () => {
+export function TasksProvider({ children }: { children: ReactNode }) {
 	const [tasks, setTasks] = useState<Task[]>([])
 
 	useEffect(() => {
@@ -86,7 +102,6 @@ export const useTasks = () => {
 		existing.push(task)
 		await writeTasks(existing)
 		setTasks(sortTasks(existing))
-
 	}, [])
 
 	const updateTask = useCallback(async (id: string, values: TaskType) => {
@@ -102,7 +117,6 @@ export const useTasks = () => {
 		}
 		await writeTasks(existing)
 		setTasks(sortTasks(existing))
-
 	}, [])
 
 	const deleteTask = useCallback(async (id: string) => {
@@ -110,8 +124,17 @@ export const useTasks = () => {
 		const filtered = existing.filter((t) => t.id !== id)
 		await writeTasks(filtered)
 		setTasks(sortTasks(filtered))
-
 	}, [])
 
-	return { tasks, addTask, updateTask, deleteTask }
+	return (
+		<TasksContext.Provider value={{ tasks, addTask, updateTask, deleteTask }}>
+			{children}
+		</TasksContext.Provider>
+	)
+}
+
+export function useTasksContext() {
+	const ctx = useContext(TasksContext)
+	if (!ctx) throw new Error("useTasksContext must be used within TasksProvider")
+	return ctx
 }

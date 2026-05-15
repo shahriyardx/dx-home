@@ -20,7 +20,13 @@ interface LinkCardProps {
 	read?: boolean
 }
 
-export function LinkCard({ icon, title, url, description, read }: LinkCardProps) {
+export function LinkCard({
+	icon,
+	title,
+	url,
+	description,
+	read,
+}: LinkCardProps) {
 	return (
 		<div
 			className={cn(

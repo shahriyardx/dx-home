@@ -5,10 +5,9 @@ export function useReadingList() {
 	const items =
 		useLiveQuery(
 			() =>
-				db.readinglist
-					.orderBy("savedAt")
-					.reverse()
-					.toArray() as Promise<ReadingItem[]>,
+				db.readinglist.orderBy("savedAt").reverse().toArray() as Promise<
+					ReadingItem[]
+				>,
 		) ?? []
 
 	const addItem = async (title: string, url: string, icon: string) => {

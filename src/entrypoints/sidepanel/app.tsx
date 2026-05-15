@@ -1,6 +1,6 @@
-import { useBackground, PRESETS } from "@/hooks/useBackground"
-import { SaveCurrentPageButton, ReadingListView } from "./ReadingList"
-import { SettingsView } from "./Settings"
+import { useBackground, PRESETS } from "@/hooks/use-background"
+import { SaveCurrentPageButton, ReadingListView } from "./reading-list"
+import { SettingsView } from "./settings"
 import { Check, Image, BookmarkPlus, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
@@ -20,33 +20,32 @@ function BackgroundGrid() {
 	return (
 		<div className="grid grid-cols-2 gap-2">
 			{PRESETS.map((preset) => {
-					const isActive = active.id === preset.id
-					return (
-						<button
-							type="button"
-							key={preset.id}
-							onClick={() => setBackground(preset)}
-							className={cn(
-								"relative aspect-video rounded-lg border-2 overflow-hidden transition-all hover:ring-2 hover:ring-ring",
-								isActive ? "border-ring ring-2 ring-ring" : "border-border",
-							)}
-						>
-							<Preview value={preset.value} />
-							{isActive && (
-								<div className="absolute top-1 right-1 bg-primary text-primary-foreground rounded-full p-0.5">
-									<Check className="size-3" />
-								</div>
-							)}
-							<div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/60 to-transparent p-1.5">
-								<span className="text-[11px] text-white font-medium">
-									{preset.name}
-								</span>
+				const isActive = active.id === preset.id
+				return (
+					<button
+						type="button"
+						key={preset.id}
+						onClick={() => setBackground(preset)}
+						className={cn(
+							"relative aspect-video rounded-lg border-2 overflow-hidden transition-all hover:ring-2 hover:ring-ring",
+							isActive ? "border-ring ring-2 ring-ring" : "border-border",
+						)}
+					>
+						<Preview value={preset.value} />
+						{isActive && (
+							<div className="absolute top-1 right-1 bg-primary text-primary-foreground rounded-full p-0.5">
+								<Check className="size-3" />
 							</div>
-						</button>
-					)
-				})}
-			</div>
-		
+						)}
+						<div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/60 to-transparent p-1.5">
+							<span className="text-[11px] text-white font-medium">
+								{preset.name}
+							</span>
+						</div>
+					</button>
+				)
+			})}
+		</div>
 	)
 }
 
@@ -57,7 +56,13 @@ const TABS: { id: Tab; icon: typeof Image; label: string }[] = [
 	{ id: "settings", icon: Settings, label: "Settings" },
 ]
 
-function TabBar({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
+function TabBar({
+	active,
+	onChange,
+}: {
+	active: Tab
+	onChange: (t: Tab) => void
+}) {
 	return (
 		<div className="flex gap-1 mb-4">
 			{TABS.map((tab) => {

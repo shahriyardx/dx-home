@@ -2,7 +2,7 @@ import { PlusIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BookmarkDialog } from "@/components/bookmark/bookmark-dialog"
 import SingleBookmark from "./single-bookmark"
-import { useBookmarks } from "@/hooks/useBookmarks"
+import { useBookmarks } from "@/hooks/use-bookmarks"
 
 const Bookmarks = () => {
 	const { bookmarks } = useBookmarks()

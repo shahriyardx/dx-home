@@ -1,4 +1,4 @@
-import useRecentTabs from "@/hooks/useRecentTabs"
+import useRecentTabs from "@/hooks/use-recent-tabs"
 import { ExternalLink, Trash } from "lucide-react"
 import {
 	Dialog,

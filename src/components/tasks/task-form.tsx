@@ -17,7 +17,7 @@ import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { Calendar } from "../ui/calendar"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
-import { useTasks } from "@/hooks/useTasks"
+import { useTasksContext } from "@/contexts/tasks-context"
 
 type Props = {
 	onSuccess: () => void
@@ -30,7 +30,7 @@ const MINUTES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
 const AMPM = ["AM", "PM"] as const
 
 const TaskForm = ({ onSuccess, defaultValues, onSubmit }: Props) => {
-	const { addTask } = useTasks()
+	const { addTask } = useTasksContext()
 
 	const form = useForm({
 		resolver: zodResolver(taskSchema),

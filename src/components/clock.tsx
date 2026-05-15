@@ -31,7 +31,9 @@ const Clock = () => {
 			<h1
 				className={cn(
 					"font-bold tracking-tight text-foreground tabular-nums",
-					clockOnly ? "text-[min(18vw,8rem)] leading-none" : "text-7xl lg:text-8xl",
+					clockOnly
+						? "text-[min(18vw,8rem)] leading-none"
+						: "text-7xl lg:text-8xl",
 				)}
 			>
 				{time}

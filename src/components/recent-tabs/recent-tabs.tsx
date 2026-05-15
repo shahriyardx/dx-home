@@ -1,4 +1,4 @@
-import useRecentTabs from "@/hooks/useRecentTabs"
+import useRecentTabs from "@/hooks/use-recent-tabs"
 import SingleTab from "./single-tab"
 import { History } from "lucide-react"
 

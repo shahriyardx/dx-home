@@ -11,11 +11,36 @@ export interface BackgroundPreset {
 }
 
 export const PRESETS: BackgroundPreset[] = [
-	{ id: "peaks", name: "Peaks", type: "image", value: "/backgrounds/peaks.png" },
-	{ id: "forest", name: "Forest", type: "image", value: "/backgrounds/forest.png" },
-	{ id: "ocean", name: "Ocean", type: "image", value: "/backgrounds/ocean.png" },
-	{ id: "sunset", name: "Sunset", type: "image", value: "/backgrounds/sunset.png" },
-	{ id: "aurora", name: "Aurora", type: "image", value: "/backgrounds/aurora.png" },
+	{
+		id: "peaks",
+		name: "Peaks",
+		type: "image",
+		value: "/backgrounds/peaks.png",
+	},
+	{
+		id: "forest",
+		name: "Forest",
+		type: "image",
+		value: "/backgrounds/forest.png",
+	},
+	{
+		id: "ocean",
+		name: "Ocean",
+		type: "image",
+		value: "/backgrounds/ocean.png",
+	},
+	{
+		id: "sunset",
+		name: "Sunset",
+		type: "image",
+		value: "/backgrounds/sunset.png",
+	},
+	{
+		id: "aurora",
+		name: "Aurora",
+		type: "image",
+		value: "/backgrounds/aurora.png",
+	},
 	{
 		id: "tulips",
 		name: "Tulips",
