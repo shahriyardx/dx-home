@@ -1,25 +1,33 @@
-Transform your new tab into a clean, minimal, and functional workspace with DxHome. Designed for productivity, DxHome replaces the blank new tab page with a beautiful dashboard that keeps everything you need at your fingertips.
+DxHome replaces the blank new tab page with a clean, minimal dashboard: a clock, a search bar that does more than search, your shortcuts, your tasks, and your reading list — over a wallpaper you choose.
+
+No account. No ads. No paywall. No analytics. Nothing is locked behind a sign-in, because there is nothing to sign in to.
 
 Key Features:
 
-- Minimal & Clean Design: Clutter-free interface with a focus on simplicity. Every element is carefully placed to feel spacious yet functional.
+- Minimal & Clean Design: A frosted, layered interface that keeps your wallpaper the hero and stays readable over any photo you throw at it.
 
-- Custom Backgrounds: Pick from stunning preset wallpapers directly from the sidepanel, or right-click any image on the web to set it as your background.
+- Command Bar: Far more than a search box. Type a question to search the web, a domain to go straight there, or:
+    2+3*4 to calculate, and press Enter to copy the answer
+    !gh react, !npm zod, !mdn fetch to search GitHub, npm or MDN directly
+    :3000 or localhost:5173 to jump to a dev server
+  A hint under the bar always tells you what Enter is about to do.
 
-- Smart Search Bar: Search the web right from your new tab page.
+- Dev Servers: Optionally finds the HTTP servers running on your machine and lists them on your new tab, named after each app. Start a project on :3000 and it appears within seconds. Databases never show up — only real HTTP servers. Off until you allow it, and turning it off gives the access straight back.
 
-- Bookmarks: Your top sites displayed as clean shortcuts for one-click access.
+- Custom Backgrounds: Pick from preset wallpapers in the sidepanel, or right-click any image on the web to set it as your background.
 
-- Tasks: Built-in todo list with deadlines. Right-click any text or link to quickly create a task.
+- Bookmarks: Your top sites as clean shortcuts for one-click access. Add, edit and remove your own.
 
-- Reading List: Save pages to read later from the sidepanel or right-click context menu. Mark as read, filter by status, and access from both new tab and sidepanel.
+- Tasks: Built-in todo list with deadlines and a calendar view. Right-click any text or link to quickly create a task.
+
+- Reading List: Save pages to read later from the sidepanel or the right-click menu. Mark as read, filter by status, and reach it from both the new tab and the sidepanel.
 
 - Recent Tabs: Automatically tracks your recently closed tabs so you never lose one.
 
-- Clock: Clean time display on the new tab page.
+- Clock: Clean time display. Click it for a full-screen focus view.
 
-- Sidepanel: Open the sidepanel from the extension icon to manage backgrounds, reading list, and settings.
+- Sidepanel: Open it from the extension icon to manage backgrounds, your reading list, and settings.
 
-- Settings: Toggle visibility of every section (clock, search, bookmarks, recent tabs, tasks, reading list) to customize exactly what you see.
+- Settings: Toggle every section — clock, search, bookmarks, recent tabs, dev servers, tasks, reading list — to see exactly what you want and nothing else.
 
-DxHome is lightweight, fast, and built for users who want a minimal, aesthetic, and productive new tab experience.
+DxHome is lightweight, fast, and built for people who want their new tab to be minimal, aesthetic, and actually useful.
