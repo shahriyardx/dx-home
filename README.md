@@ -5,8 +5,7 @@ Transform your new tab into a beautiful, minimal, and fully personalized workspa
 # Key Features:
 - Minimal & Clean Design – Enjoy a clutter-free, modern interface that focuses on what matters: your shortcuts, your inspiration, and your workflow.
 - Custom Bookmarks – Add, organize, and manage your favorite websites directly from your new tab. Access your frequently visited sites in just one click.
-- Beautiful Backgrounds – Choose from stunning wallpapers and gradients, or use your own images to create a background that fits your style.
-- Dynamic Themes – Switch between light, dark, and pastel themes to match your mood or workspace environment. Enjoy seamless transitions for a visually pleasing experience.
+- Beautiful Backgrounds – Choose from stunning preset wallpapers, or right-click any image on the web to set it as your background.
 
 DxHome is built for users who love minimalism, aesthetic designs, and productivity. It’s lightweight, fast, and designed to make every new tab a pleasant, inspiring experience.
 

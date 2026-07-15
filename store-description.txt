@@ -10,7 +10,7 @@ Key Features:
 
 - Bookmarks: Your top sites displayed as clean shortcuts for one-click access.
 
-- Tasks: Built-in todo list with deadlines, reminders, and notifications. Right-click any text or link to quickly create a task.
+- Tasks: Built-in todo list with deadlines. Right-click any text or link to quickly create a task.
 
 - Reading List: Save pages to read later from the sidepanel or right-click context menu. Mark as read, filter by status, and access from both new tab and sidepanel.
 

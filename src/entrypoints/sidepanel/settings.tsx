@@ -12,7 +12,7 @@ type Section = {
 
 const SECTIONS: Section[] = [
 	{ key: "showClock", label: "Clock", desc: "Current time display" },
-	{ key: "showSearch", label: "Search Bar", desc: "Search and calculator" },
+	{ key: "showSearch", label: "Search Bar", desc: "Search the web" },
 	{ key: "showBookmarks", label: "Bookmarks", desc: "Saved site shortcuts" },
 	{ key: "showRecentTabs", label: "Recent Tabs", desc: "Recently closed tabs" },
 	{
