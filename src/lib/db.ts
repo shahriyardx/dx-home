@@ -7,15 +7,6 @@ interface Bookmark {
 	url: string
 }
 
-interface Task {
-	id: number
-	title: string
-	description?: string
-	done: boolean
-	deadline?: Date
-	createdAt: Date
-}
-
 export interface ClosedTab {
 	id: number
 	title: string
@@ -34,7 +25,6 @@ export interface ReadingItem {
 
 const db = new Dexie("dx-database") as Dexie & {
 	bookmarks: EntityTable<Bookmark, "id">
-	tasks: EntityTable<Task, "id">
 	recenttabs: EntityTable<ClosedTab, "id">
 	readinglist: EntityTable<ReadingItem, "id">
 }
@@ -61,6 +51,13 @@ db.version(4).stores({
 	readinglist: "++id, url, read, savedAt",
 })
 
+// Tasks live in chrome.storage.sync (see contexts/tasks-context.tsx); this table
+// was never read from. Versions 2-4 keep their `tasks` declaration so existing
+// installs still migrate through them before it is dropped here.
+db.version(5).stores({
+	tasks: null,
+})
+
 db.on("populate", () => {
 	chrome.topSites.get((sites) => {
 		const bookmarks = sites.map((site) => ({
@@ -70,18 +67,7 @@ db.on("populate", () => {
 
 		db.bookmarks.bulkAdd(bookmarks)
 	})
-
-	db.tasks.add({
-		title: "Delete this task",
-		done: false,
-		deadline: (() => {
-			const current = new Date()
-			current.setHours(current.getHours() + 1)
-			return current
-		})(),
-		createdAt: new Date(),
-	})
 })
 
-export type { Bookmark, Task }
+export type { Bookmark }
 export { db }
