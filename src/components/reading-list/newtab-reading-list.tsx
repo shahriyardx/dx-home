@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react"
 import { useReadingList } from "@/hooks/use-reading-list"
-import { Check, BookOpen, ChevronLeft, ChevronRight } from "lucide-react"
-import { Favicon } from "@/components/favicon"
-import { LinkCard } from "@/components/link-card"
+import { BookOpen, ChevronLeft, ChevronRight } from "lucide-react"
+import SingleReadingItem from "@/components/reading-list/single-reading-item"
 
 const PAGE_SIZE = 10
 
 export function NewtabReadingList({ tabbed }: { tabbed?: boolean }) {
-	const { items } = useReadingList()
+	const { items, deleteItem, toggleRead } = useReadingList()
 	const [page, setPage] = useState(0)
 	const totalPages = Math.ceil(items.length / PAGE_SIZE)
 	const pageItems = items.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
@@ -54,30 +53,11 @@ export function NewtabReadingList({ tabbed }: { tabbed?: boolean }) {
 			</div>
 			<div className="flex items-center gap-1.5 flex-wrap">
 				{pageItems.map((item) => (
-					<LinkCard
+					<SingleReadingItem
 						key={item.id}
-						icon={
-							item.read ? (
-								<div className="size-5 shrink-0 rounded flex items-center justify-center bg-primary/10 text-primary">
-									<Check className="size-3" />
-								</div>
-							) : item.icon ? (
-								<img
-									src={item.icon}
-									alt=""
-									className="size-5 shrink-0 rounded"
-								/>
-							) : (
-								<Favicon
-									url={item.url}
-									size={20}
-									className="size-5 shrink-0 rounded"
-								/>
-							)
-						}
-						title={item.title}
-						url={item.url}
-						read={item.read}
+						item={item}
+						onDelete={deleteItem}
+						onToggleRead={toggleRead}
 					/>
 				))}
 			</div>
