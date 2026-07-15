@@ -18,8 +18,13 @@ const useRecentTabs = ({ max }: { max: number } = { max: 10 }) => {
 		new Map(filteredTabs.map((tab) => [tab.url, tab])).values(),
 	)
 
-	const deleteTab = (id: number) => {
-		db.recenttabs.delete(id)
+	// The list is deduped by url above, so one visible row can stand for several
+	// records. Deleting only `id` would leave the rest and the entry would
+	// reappear as the next duplicate surfaced.
+	const deleteTab = async (id: number) => {
+		const tab = await db.recenttabs.get(id)
+		if (!tab) return
+		await db.recenttabs.where("url").equals(tab.url).delete()
 	}
 
 	return {

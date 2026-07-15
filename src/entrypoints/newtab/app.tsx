@@ -1,6 +1,7 @@
 import { useBackground } from "@/hooks/use-background"
 import { useNewtabSettings } from "@/hooks/use-newtab-settings"
 import { useIsMobile } from "@/hooks/use-is-mobile"
+import { cssUrl } from "@/lib/utils"
 import LeftPanel from "@/components/panel/left-panel"
 import RightPanel from "@/components/panel/right-panel"
 import {
@@ -17,7 +18,7 @@ const App = () => {
 	const bgStyle =
 		bg.type === "image"
 			? {
-					backgroundImage: `url(${bg.value})`,
+					backgroundImage: cssUrl(bg.value),
 					backgroundSize: "cover" as const,
 					backgroundPosition: "center" as const,
 				}

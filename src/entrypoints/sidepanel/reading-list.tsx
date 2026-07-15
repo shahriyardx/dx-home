@@ -1,7 +1,7 @@
 import { useReadingList } from "@/hooks/use-reading-list"
 import { BookOpen, Check, Trash2 } from "lucide-react"
 import { Favicon } from "@/components/favicon"
-import { cn } from "@/lib/utils"
+import { cn, openExternal } from "@/lib/utils"
 import { useState } from "react"
 
 type Filter = "all" | "unread" | "read"
@@ -16,7 +16,7 @@ export function ReadingListView() {
 			? items
 			: items.filter((i) => (filter === "read") === i.read)
 
-	const openLink = (url: string) => window.open(url, "_blank")
+	const openLink = (url: string) => openExternal(url)
 
 	return (
 		<div className="@container">

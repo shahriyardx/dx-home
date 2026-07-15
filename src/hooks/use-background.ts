@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { isSafeImageUrl } from "@/lib/utils"
 
 const STORAGE_KEY = "dx-background"
 const CUSTOM_KEY = "dx-background-custom"
@@ -71,8 +72,10 @@ export function useBackground() {
 
 	useEffect(() => {
 		chrome.storage.local.get([STORAGE_KEY, CUSTOM_KEY]).then((res) => {
+			// Also checked on read, not just on write: a value stored before this
+			// validation existed would otherwise stay live.
 			const custom = res[CUSTOM_KEY] as string | undefined
-			if (custom) {
+			if (custom && isSafeImageUrl(custom)) {
 				setCustomBg(custom)
 				return
 			}
@@ -86,7 +89,7 @@ export function useBackground() {
 		const handler = (changes: Record<string, chrome.storage.StorageChange>) => {
 			if (changes[CUSTOM_KEY]) {
 				const url = changes[CUSTOM_KEY].newValue as string | undefined
-				setCustomBg(url || null)
+				setCustomBg(url && isSafeImageUrl(url) ? url : null)
 				return
 			}
 			if (changes[STORAGE_KEY]) {

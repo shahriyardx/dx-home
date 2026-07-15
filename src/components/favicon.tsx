@@ -10,12 +10,13 @@ type Props = {
 function faviconCandidates(url: string) {
 	try {
 		const parsed = new URL(url)
+		if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return []
 
 		const domain = getDomain(parsed.hostname) ?? parsed.hostname
 
 		return [
 			`${parsed.origin}/favicon.ico`,
-			`https://icons.duckduckgo.com/ip3/${domain}.ico`,
+			`https://icons.duckduckgo.com/ip3/${encodeURIComponent(domain)}.ico`,
 		]
 	} catch {
 		return []

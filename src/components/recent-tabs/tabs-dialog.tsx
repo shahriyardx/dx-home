@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { DialogClose } from "@radix-ui/react-dialog"
+import { openExternal } from "@/lib/utils"
 import { Button } from "../ui/button"
 
 function formatUrl(url: string): string {
@@ -71,7 +72,7 @@ const TabsDialog = ({ maxTabs }: { maxTabs: number }) => {
 											variant="ghost"
 											size="icon"
 											className="size-7 text-muted-foreground/60"
-											onClick={() => window.open(tab.url)}
+											onClick={() => openExternal(tab.url)}
 										>
 											<ExternalLink size={13} />
 										</Button>

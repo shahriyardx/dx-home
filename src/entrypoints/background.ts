@@ -2,6 +2,7 @@ import { db } from "@/lib/db"
 import type { Task } from "@/contexts/tasks-context"
 import { defineBackground } from "wxt/utils/define-background"
 import { createId } from "@paralleldrive/cuid2"
+import { isSafeImageUrl, isSafeWebUrl } from "@/lib/utils"
 
 export type Tab = {
 	title: string
@@ -9,8 +10,38 @@ export type Tab = {
 	icon: string
 }
 
+const TAB_CACHE_KEY = "dx-open-tabs"
+
+type CachedTab = { title: string; url: string; icon: string }
+
 export default defineBackground(() => {
-	const openTabs: Record<number, chrome.tabs.Tab> = {}
+	// The service worker is torn down after ~30s idle, so tab state has to live in
+	// storage.session rather than a module-scoped object — otherwise onRemoved
+	// wakes a fresh worker with an empty cache and records nothing.
+	const readTabCache = async () =>
+		(((await chrome.storage.session.get(TAB_CACHE_KEY))[TAB_CACHE_KEY] ??
+			{}) as Record<number, CachedTab>)
+
+	// Tab events fire in bursts; serialize the read-modify-writes so they don't
+	// clobber each other.
+	let queue: Promise<unknown> = Promise.resolve()
+	const enqueue = <T>(job: () => Promise<T>): Promise<T> => {
+		const run = queue.then(job, job)
+		queue = run.catch(() => {})
+		return run
+	}
+
+	const rememberTab = (tab: chrome.tabs.Tab) =>
+		enqueue(async () => {
+			if (tab.id == null) return
+			const cache = await readTabCache()
+			cache[tab.id] = {
+				title: tab.title || "",
+				url: tab.url || "",
+				icon: tab.favIconUrl || "",
+			}
+			await chrome.storage.session.set({ [TAB_CACHE_KEY]: cache })
+		})
 
 	// Open sidepanel on action icon click
 	chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
@@ -46,7 +77,10 @@ export default defineBackground(() => {
 	chrome.contextMenus.onClicked.addListener(async (info) => {
 		if (info.menuItemId === "save-reading-list") {
 			const url = info.linkUrl || info.pageUrl
-			if (!url) return
+			// linkUrl is the raw href of whatever was right-clicked, so a page can
+			// offer a javascript: link here. It is later handed to window.open from
+			// an extension page, where it would run with our origin.
+			if (!url || !isSafeWebUrl(url)) return
 			const [tab] = await chrome.tabs.query({
 				active: true,
 				currentWindow: true,
@@ -61,6 +95,9 @@ export default defineBackground(() => {
 		}
 
 		if (info.menuItemId === "set-background" && info.srcUrl) {
+			// Re-fetched on every new tab, so a page-controlled URL here is a
+			// persistent beacon that outlives the page itself.
+			if (!isSafeImageUrl(info.srcUrl)) return
 			await chrome.storage.local.set({ "dx-background-custom": info.srcUrl })
 		}
 		if (info.menuItemId === "add-task") {
@@ -82,7 +119,17 @@ export default defineBackground(() => {
 				done: false,
 				createdAt: new Date().toISOString() as unknown as Date,
 			})
-			await chrome.storage.sync.set({ "dx-tasks": existing })
+			// storage.sync caps a single item at QUOTA_BYTES_PER_ITEM (8KB). Without
+			// this the set() rejects inside the listener and the task vanishes with
+			// no error surfaced anywhere.
+			try {
+				await chrome.storage.sync.set({ "dx-tasks": existing })
+			} catch (err) {
+				console.error(
+					"[dx-home] could not save task — storage.sync item quota reached",
+					err,
+				)
+			}
 		}
 
 		if (info.menuItemId === "bookmark-page") {
@@ -97,23 +144,26 @@ export default defineBackground(() => {
 	})
 
 	chrome.tabs.onCreated.addListener((tab) => {
-		if (tab.id) {
-			openTabs[tab.id] = tab
-		}
+		rememberTab(tab)
 	})
 
-	chrome.tabs.onUpdated.addListener((tabId, _changeInfo, tab) => {
-		openTabs[tabId] = tab
+	chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
+		rememberTab(tab)
 	})
 
 	chrome.tabs.onRemoved.addListener(async (tabId) => {
-		const tab = openTabs[tabId]
-		if (tab) {
-			await db.recenttabs.add({
-				title: tab.title || "",
-				url: tab.url || "",
-				icon: tab.favIconUrl || "",
-			})
+		const tab = await enqueue(async () => {
+			const cache = await readTabCache()
+			const entry = cache[tabId]
+			if (entry) {
+				delete cache[tabId]
+				await chrome.storage.session.set({ [TAB_CACHE_KEY]: cache })
+			}
+			return entry
+		})
+
+		if (tab && isSafeWebUrl(tab.url)) {
+			await db.recenttabs.add(tab)
 		}
 	})
 })

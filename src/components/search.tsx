@@ -1,5 +1,6 @@
 import { Search } from "lucide-react"
 import { Input } from "./ui/input"
+import { openExternal } from "@/lib/utils"
 import { useState } from "react"
 
 const SearchBar = () => {
@@ -12,8 +13,8 @@ const SearchBar = () => {
 		const isUrl = /^(https?:\/\/)?[\w-]+(\.[\w-]+)+/.test(trimmed)
 
 		if (isUrl) {
-			const url = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`
-			window.open(url, "_blank")
+			const hasScheme = /^https?:\/\//i.test(trimmed)
+			openExternal(hasScheme ? trimmed : `https://${trimmed}`)
 		} else {
 			chrome.search.query({ text: trimmed, disposition: "NEW_TAB" })
 		}
