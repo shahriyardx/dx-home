@@ -1,8 +1,10 @@
-import { db } from "@/lib/db"
-import type { Task } from "@/contexts/tasks-context"
+import { db } from "@/shared/storage/db"
+import { defineStorageItem } from "@/shared/storage"
+import { tasksItem, type Task } from "@/features/tasks/tasks-context"
+import { customBackground } from "@/features/backgrounds/use-background"
 import { defineBackground } from "wxt/utils/define-background"
 import { createId } from "@paralleldrive/cuid2"
-import { isSafeImageUrl, isSafeWebUrl } from "@/lib/utils"
+import { isSafeImageUrl, isSafeWebUrl } from "@/shared/lib/utils"
 
 export type Tab = {
 	title: string
@@ -10,18 +12,18 @@ export type Tab = {
 	icon: string
 }
 
-const TAB_CACHE_KEY = "dx-open-tabs"
-
 type CachedTab = { title: string; url: string; icon: string }
 
-export default defineBackground(() => {
-	// The service worker is torn down after ~30s idle, so tab state has to live in
-	// storage.session rather than a module-scoped object — otherwise onRemoved
-	// wakes a fresh worker with an empty cache and records nothing.
-	const readTabCache = async () =>
-		(((await chrome.storage.session.get(TAB_CACHE_KEY))[TAB_CACHE_KEY] ??
-			{}) as Record<number, CachedTab>)
+// The service worker is torn down after ~30s idle, so tab state has to live in
+// storage.session rather than a module-scoped object — otherwise onRemoved wakes
+// a fresh worker with an empty cache and records nothing.
+const tabCache = defineStorageItem<Record<number, CachedTab>>(
+	"session",
+	"dx-open-tabs",
+	{},
+)
 
+export default defineBackground(() => {
 	// Tab events fire in bursts; serialize the read-modify-writes so they don't
 	// clobber each other.
 	let queue: Promise<unknown> = Promise.resolve()
@@ -34,13 +36,13 @@ export default defineBackground(() => {
 	const rememberTab = (tab: chrome.tabs.Tab) =>
 		enqueue(async () => {
 			if (tab.id == null) return
-			const cache = await readTabCache()
+			const cache = await tabCache.get()
 			cache[tab.id] = {
 				title: tab.title || "",
 				url: tab.url || "",
 				icon: tab.favIconUrl || "",
 			}
-			await chrome.storage.session.set({ [TAB_CACHE_KEY]: cache })
+			await tabCache.set(cache)
 		})
 
 	// Open sidepanel on action icon click
@@ -98,32 +100,31 @@ export default defineBackground(() => {
 			// Re-fetched on every new tab, so a page-controlled URL here is a
 			// persistent beacon that outlives the page itself.
 			if (!isSafeImageUrl(info.srcUrl)) return
-			await chrome.storage.local.set({ "dx-background-custom": info.srcUrl })
+			await customBackground.set(info.srcUrl)
 		}
 		if (info.menuItemId === "add-task") {
 			const [tab] = await chrome.tabs.query({
 				active: true,
 				currentWindow: true,
 			})
+			// linkText is populated by Chrome but missing from @types/chrome.
+			const linkText = (info as { linkText?: string }).linkText
 			const title = info.linkUrl
-				? (info as any).linkText || info.linkUrl
+				? linkText || info.linkUrl
 				: info.selectionText || tab?.title || "Untitled task"
-			const raw = (await chrome.storage.sync.get("dx-tasks"))["dx-tasks"] as
-				| Task[]
-				| undefined
-			const existing = raw || []
-			existing.push({
+			const task: Task = {
 				id: createId(),
 				title,
 				description: info.linkUrl || undefined,
 				done: false,
-				createdAt: new Date().toISOString() as unknown as Date,
-			})
+				createdAt: new Date(),
+			}
 			// storage.sync caps a single item at QUOTA_BYTES_PER_ITEM (8KB). Without
 			// this the set() rejects inside the listener and the task vanishes with
 			// no error surfaced anywhere.
 			try {
-				await chrome.storage.sync.set({ "dx-tasks": existing })
+				const existing = await tasksItem.get()
+				await tasksItem.set([...existing, task])
 			} catch (err) {
 				console.error(
 					"[dx-home] could not save task — storage.sync item quota reached",
@@ -153,11 +154,11 @@ export default defineBackground(() => {
 
 	chrome.tabs.onRemoved.addListener(async (tabId) => {
 		const tab = await enqueue(async () => {
-			const cache = await readTabCache()
+			const cache = await tabCache.get()
 			const entry = cache[tabId]
 			if (entry) {
 				delete cache[tabId]
-				await chrome.storage.session.set({ [TAB_CACHE_KEY]: cache })
+				await tabCache.set(cache)
 			}
 			return entry
 		})

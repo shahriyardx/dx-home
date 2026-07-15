@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A newer push makes an in-flight run redundant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Lint and format
+        run: bunx biome check src
+
+      - name: Typecheck
+        run: bun run compile
+
+      - name: Test
+        run: bun test
+
+      # Both targets: the Firefox build is published from the same source and
+      # has broken before without anyone noticing.
+      - name: Build (chrome)
+        run: bun run build
+
+      - name: Build (firefox)
+        run: bun run build:firefox

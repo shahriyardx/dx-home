@@ -47,6 +47,9 @@
     --color-glass: var(--glass);
     --color-glass-border: var(--glass-border);
     --color-glass-hover: var(--glass-hover);
+    --color-glass-raised: var(--glass-raised);
+    --color-glass-overlay: var(--glass-overlay);
+    --color-glass-border-lit: var(--glass-border-lit);
     --font-heading: var(--font-sans);
     --font-mono: "JetBrains Mono Variable", monospace;
     --color-sidebar-ring: var(--sidebar-ring);
@@ -94,10 +97,16 @@
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
 
-    /* Glass tokens (light) */
-    --glass: oklch(1 0 0 / 0.25);
-    --glass-border: oklch(1 0 0 / 0.35);
-    --glass-hover: oklch(1 0 0 / 0.4);
+    /* Glass — see the .dark block for why these tint dark in both themes. The
+       newtab always renders glass over a photo, never over --background. */
+    --glass: oklch(0.16 0.008 265 / 0.58);
+    --glass-border: oklch(1 0 0 / 0.12);
+    --glass-hover: oklch(0.22 0.01 265 / 0.68);
+    --glass-raised: oklch(0.24 0.01 265 / 0.5);
+    --glass-overlay: oklch(0.17 0.008 265 / 0.85);
+    --glass-border-lit: oklch(1 0 0 / 0.18);
+    --glass-blur: 20px;
+    --glass-blur-strong: 40px;
 
     /* Chart — refined palette */
     --chart-1: oklch(0.87 0 0);
@@ -142,10 +151,33 @@
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);
 
-    /* Glass tokens (dark) */
-    --glass: oklch(1 1 0 / 0.06);
-    --glass-border: oklch(1 1 0 / 0.1);
-    --glass-hover: oklch(1 1 0 / 0.1);
+    /*
+     * Glass, tier 2 — panels resting on the wallpaper.
+     *
+     * Tinted DARK rather than light. The wallpaper is user-chosen and can be
+     * anything: a white tint disappears against snow and takes the white text
+     * with it, while a dark tint darkens every wallpaper by the same amount, so
+     * one foreground colour stays legible over snow and forest alike.
+     *
+     * Saturation is pushed back up in the blur, because blurring a photo greys
+     * it out and the wallpaper is meant to be the hero.
+     */
+    --glass: oklch(0.16 0.008 265 / 0.58);
+    --glass-border: oklch(1 0 0 / 0.12);
+    --glass-hover: oklch(0.22 0.01 265 / 0.68);
+
+    /* Tier 3 — raised inside a panel. Reads above tier 2 without a new border. */
+    --glass-raised: oklch(0.24 0.01 265 / 0.5);
+
+    /* Tier 4 — dialogs, popovers, menus. Near-opaque: these carry dense text
+       and must not compete with whatever is behind them. */
+    --glass-overlay: oklch(0.17 0.008 265 / 0.85);
+
+    /* A brighter hairline for edges that should catch the light. */
+    --glass-border-lit: oklch(1 0 0 / 0.18);
+
+    --glass-blur: 20px;
+    --glass-blur-strong: 40px;
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
@@ -159,6 +191,87 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+}
+
+/*
+ * ── Glass system ────────────────────────────────────────────────────────────
+ *
+ * Depth here comes from three things layered in a fixed order, not from blur
+ * alone:
+ *   1. the tint          — darkens whatever wallpaper is behind it
+ *   2. the blur          — separates panel from photo, saturated back up
+ *   3. the specular edge — a 1px inset highlight along the top, as if lit from
+ *                          above, plus a drop shadow beneath
+ *
+ * The third is what reads as glass rather than as a grey box. Without it the
+ * panel looks painted onto the wallpaper.
+ */
+
+@utility glass {
+    background-color: var(--glass);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+        inset 0 1px 0 0 oklch(1 0 0 / 0.07),
+        0 8px 32px -12px oklch(0 0 0 / 0.6);
+}
+
+@utility glass-raised {
+    background-color: var(--glass-raised);
+    border: 1px solid var(--glass-border);
+    box-shadow: inset 0 1px 0 0 oklch(1 0 0 / 0.06);
+}
+
+@utility glass-overlay {
+    background-color: var(--glass-overlay);
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(1.5);
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(1.5);
+    border: 1px solid var(--glass-border-lit);
+    box-shadow:
+        inset 0 1px 0 0 oklch(1 0 0 / 0.09),
+        0 24px 64px -16px oklch(0 0 0 / 0.7);
+}
+
+/*
+ * For text sitting directly on the wallpaper with no panel under it — the
+ * clock. A blurred dark shadow rather than a hard one: it reads as depth on a
+ * dark photo and as a soft edge on a bright one, without ever looking like a
+ * drop shadow from 2009.
+ */
+@utility on-wallpaper {
+    text-shadow: 0 1px 24px oklch(0 0 0 / 0.5), 0 1px 3px oklch(0 0 0 / 0.35);
+}
+
+/*
+ * A vignette behind the content column, under the panels and above the
+ * wallpaper.
+ *
+ * Deliberately not strong enough to guarantee legibility on its own — a scrim
+ * heavy enough to rescue white text over a sunlit photo is a black sheet across
+ * half the window, and the wallpaper is the point of the product. It only
+ * weights the column; the panels tint and the on-wallpaper shadows are what
+ * actually carry contrast. Angled so the falloff follows the reading edge
+ * rather than cutting a visible vertical band.
+ */
+@utility content-scrim {
+    /*
+     * Absolute stops for the dark part, a percentage for the tail.
+     *
+     * The dark region has to track the reading column, which is a fixed width
+     * (max-w-xl at px-16), so it is anchored in rem — percentages would thin it
+     * out on a narrow window and smear it across an ultrawide one. The final
+     * stop is 100% so the fade always lands exactly on the panel's right edge,
+     * at any width: capped at a fixed width it stopped partway across a wide
+     * monitor and left a bright band before the right panel.
+     */
+    background: linear-gradient(
+        100deg,
+        oklch(0 0 0 / 0.62) 0,
+        oklch(0 0 0 / 0.44) 24rem,
+        oklch(0 0 0 / 0.18) 42rem,
+        transparent 100%
+    );
 }
 
 @layer base {
