@@ -17,7 +17,7 @@ const FEEDS: { id: Feed; icon: typeof History; label: string }[] = [
 	{ id: "readingList", icon: BookOpen, label: "Reading" },
 ]
 
-const LeftPanel = () => {
+const LeftPanel = ({ fullWidth = false }: { fullWidth?: boolean }) => {
 	const { settings } = useNewtabSettings()
 	const [feed, setFeed] = useState<Feed>("recentTabs")
 
@@ -42,7 +42,15 @@ const LeftPanel = () => {
 			<div className="content-scrim pointer-events-none absolute inset-0 z-0" />
 
 			<div className="relative z-10 flex h-full flex-col justify-center overflow-y-auto px-16 py-12">
-				<div className="w-full max-w-xl shrink-0">
+				{/*
+				 * 72rem, double the old 36rem cap. The panel is user-resizable, so a
+				 * tight cap meant dragging the handle past it only widened the empty
+				 * gutter, not the content.
+				 *
+				 * With no right panel there is no gutter to balance against, so the cap
+				 * comes off entirely and the column takes the window.
+				 */}
+				<div className={cn("w-full shrink-0", !fullWidth && "max-w-[72rem]")}>
 					{settings.showClock && (
 						<SectionBoundary label="Clock">
 							<Clock />

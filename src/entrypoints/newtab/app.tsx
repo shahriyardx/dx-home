@@ -58,7 +58,7 @@ const App = () => {
 	if (isMobile) {
 		return (
 			<div className="min-h-screen bg-cover bg-center" style={bgStyle}>
-				<LeftPanel />
+				<LeftPanel fullWidth />
 			</div>
 		)
 	}
@@ -78,7 +78,7 @@ const App = () => {
 					}}
 				>
 					<ResizablePanel>
-						<LeftPanel />
+						<LeftPanel fullWidth={!settings.showRightPanel} />
 					</ResizablePanel>
 
 					{settings.showRightPanel && (
