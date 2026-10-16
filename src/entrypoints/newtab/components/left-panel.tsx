@@ -52,12 +52,14 @@ const LeftPanel = ({ fullWidth = false }: { fullWidth?: boolean }) => {
 				 */}
 				<div className={cn("w-full shrink-0", !fullWidth && "max-w-[72rem]")}>
 					{settings.showClock && (
-						<SectionBoundary label="Clock">
-							<Clock />
-						</SectionBoundary>
+						<div className="rise">
+							<SectionBoundary label="Clock">
+								<Clock />
+							</SectionBoundary>
+						</div>
 					)}
 
-					<div className="mt-10 space-y-6">
+					<div className="rise-stagger mt-10 space-y-6">
 						{settings.showSearch && (
 							<SectionBoundary label="Search">
 								<SearchBar />
@@ -90,7 +92,7 @@ const LeftPanel = ({ fullWidth = false }: { fullWidth?: boolean }) => {
 												className={cn(
 													"flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1",
 													"text-[10px] font-semibold uppercase tracking-[0.16em]",
-													"transition-all duration-200",
+													"transition-[background-color,border-color,color]",
 													isActive
 														? "glass-raised text-white/90"
 														: "on-wallpaper border border-transparent text-white/50 hover:text-white/80",
@@ -102,15 +104,23 @@ const LeftPanel = ({ fullWidth = false }: { fullWidth?: boolean }) => {
 										)
 									})}
 								</div>
-								<SectionBoundary
-									label={feed === "recentTabs" ? "Recent tabs" : "Reading list"}
+								{/* Keyed so switching feeds remounts and fades the new one in. */}
+								<div
+									key={feed}
+									className="animate-in fade-in slide-in-from-bottom-1 duration-300 ease-smooth"
 								>
-									{feed === "recentTabs" ? (
-										<RecentTabs tabbed />
-									) : (
-										<NewtabReadingList tabbed />
-									)}
-								</SectionBoundary>
+									<SectionBoundary
+										label={
+											feed === "recentTabs" ? "Recent tabs" : "Reading list"
+										}
+									>
+										{feed === "recentTabs" ? (
+											<RecentTabs tabbed />
+										) : (
+											<NewtabReadingList tabbed />
+										)}
+									</SectionBoundary>
+								</div>
 							</div>
 						) : (
 							<>

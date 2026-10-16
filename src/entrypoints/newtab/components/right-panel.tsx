@@ -39,7 +39,13 @@ const RightPanelInner = () => {
 				<SectionBoundary label="Tasks">
 					<ScrollArea className="h-screen overflow-hidden">
 						{SectionComponent ? (
-							<SectionComponent onNavigate={setActiveSection} />
+							// Keyed so tasks <-> calendar fades rather than snaps.
+							<div
+								key={activeSection}
+								className="animate-in fade-in duration-500 ease-smooth"
+							>
+								<SectionComponent onNavigate={setActiveSection} />
+							</div>
 						) : null}
 					</ScrollArea>
 				</SectionBoundary>

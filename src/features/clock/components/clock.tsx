@@ -25,16 +25,16 @@ const Clock = () => {
 			onClick={() => setClockOnly((v) => !v)}
 			title={clockOnly ? "Exit focus" : "Focus the clock"}
 			className={cn(
-				"group block w-fit cursor-pointer select-none text-left transition-all duration-500",
+				"group block w-fit cursor-pointer select-none text-left",
 				clockOnly &&
-					"fixed inset-0 z-50 flex w-full flex-col items-center justify-center bg-black/25 backdrop-blur-3xl",
+					"fixed inset-0 z-50 flex w-full flex-col items-center justify-center bg-black/25 backdrop-blur-3xl animate-in fade-in duration-500 ease-smooth",
 			)}
 		>
 			{/* tabular-nums so the width does not jitter as the minute ticks over. */}
 			<h1
 				className={cn(
-					"on-wallpaper font-bold tabular-nums text-white",
-					"tracking-tight",
+					"on-wallpaper font-semibold tabular-nums text-white",
+					"tracking-tighter",
 					// Focus mode has the whole window to work with; the old 8rem cap
 					// left it barely larger than the inline clock, which made the mode
 					// look broken rather than focused. vw drives it, the rem cap only
@@ -45,7 +45,11 @@ const Clock = () => {
 				)}
 			>
 				{time}
-				{!clockOnly && <span className="ms-2 text-white/50">{ampm}</span>}
+				{!clockOnly && (
+					<span className="ms-3 align-top text-2xl font-medium tracking-normal text-white/45 lg:text-3xl">
+						{ampm}
+					</span>
+				)}
 			</h1>
 
 			{/*

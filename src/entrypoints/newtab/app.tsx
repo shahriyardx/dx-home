@@ -10,25 +10,19 @@ import {
 	ResizablePanel,
 	ResizablePanelGroup,
 } from "@/shared/ui/resizable"
-import type { Layout } from "react-resizable-panels"
+import { useRef } from "react"
 
-// Was raw localStorage — the one store that never reached chrome.storage, so it
-// could not be read by the worker or the sidepanel.
-//
-// Layout is a map of panel id -> flexGrow, not an array. The old code stored it
-// through an untyped JSON.parse, so nothing checked the shape.
-const mainLayout = defineStorageItem<Layout | undefined, unknown>(
+// Right panel width in pixels. A percent layout reopens at a different width
+// whenever the window size differs from when it was saved (e.g. after the
+// panel unmounts below the mobile breakpoint). Older installs stored a
+// percent layout object; it fails the check and falls back to the default.
+const mainLayout = defineStorageItem<number | undefined, unknown>(
 	"local",
 	"dx-main-layout",
 	undefined,
 	{
 		deserialize: (value) =>
-			value !== null &&
-			typeof value === "object" &&
-			!Array.isArray(value) &&
-			Object.values(value).every((n) => typeof n === "number")
-				? (value as Layout)
-				: undefined,
+			typeof value === "number" && Number.isFinite(value) ? value : undefined,
 	},
 )
 
@@ -37,10 +31,11 @@ const App = () => {
 	const { settings } = useNewtabSettings()
 	const isMobile = useIsMobile()
 	const {
-		value: savedLayout,
-		setValue: saveLayout,
+		value: savedWidth,
+		setValue: saveWidth,
 		loaded,
 	} = useStorageItem(mainLayout)
+	const rightWidth = useRef(savedWidth)
 
 	const bgStyle =
 		bg.type === "image"
@@ -65,16 +60,16 @@ const App = () => {
 
 	return (
 		<div className="min-h-screen bg-cover bg-center" style={bgStyle}>
-			{/* defaultLayout is only read on mount, and chrome.storage reads are
+			{/* defaultSize is only read on mount, and chrome.storage reads are
 			    async — mounting before it resolves would snap the panels from the
 			    default to the saved size. */}
 			{loaded && (
 				<ResizablePanelGroup
 					orientation="horizontal"
 					className="min-h-screen"
-					defaultLayout={savedLayout}
-					onLayoutChange={(sizes) => {
-						void saveLayout(sizes)
+					onLayoutChanged={() => {
+						if (rightWidth.current !== undefined)
+							void saveWidth(rightWidth.current)
 					}}
 				>
 					<ResizablePanel>
@@ -85,9 +80,13 @@ const App = () => {
 						<>
 							<ResizableHandle />
 							<ResizablePanel
-								defaultSize="600px"
+								defaultSize={`${savedWidth ?? 600}px`}
 								minSize="500px"
 								maxSize="900px"
+								groupResizeBehavior="preserve-pixel-size"
+								onResize={(size) => {
+									rightWidth.current = size.inPixels
+								}}
 							>
 								<RightPanel />
 							</ResizablePanel>
