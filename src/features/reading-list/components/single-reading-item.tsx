@@ -22,7 +22,7 @@ const SingleReadingItem = ({ item, onDelete, onToggleRead }: Props) => {
 				<LinkCard
 					icon={
 						item.read ? (
-							<div className="size-5 shrink-0 rounded flex items-center justify-center bg-primary/10 text-primary">
+							<div className="flex size-5 shrink-0 items-center justify-center text-primary">
 								<Check className="size-3" />
 							</div>
 						) : item.icon ? (
@@ -41,13 +41,10 @@ const SingleReadingItem = ({ item, onDelete, onToggleRead }: Props) => {
 				/>
 			</ContextMenuTrigger>
 			<ContextMenuContent>
-				<ContextMenuItem onMouseDown={() => onToggleRead(item.id)}>
+				<ContextMenuItem onClick={() => onToggleRead(item.id)}>
 					Mark as {item.read ? "unread" : "read"}
 				</ContextMenuItem>
-				<ContextMenuItem
-					variant="destructive"
-					onMouseDown={() => onDelete(item.id)}
-				>
+				<ContextMenuItem danger onClick={() => onDelete(item.id)}>
 					Delete
 				</ContextMenuItem>
 			</ContextMenuContent>

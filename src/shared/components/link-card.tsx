@@ -28,38 +28,29 @@ export function LinkCard({
 	read,
 }: LinkCardProps) {
 	return (
-		<div
-			className={cn(
-				"glass group cursor-pointer rounded-xl p-2.5",
-				"grid grid-cols-[1.25rem_auto] gap-2.5",
-				// Lifts toward the light on hover rather than changing colour: the
-				// depth cue is what the whole system is built on.
-				"transition-[transform,background-color,border-color] duration-200",
-				"hover:-translate-y-0.5 hover:border-glass-border-lit hover:bg-glass-hover",
-			)}
+		<a
+			href={url}
+			target="_blank"
+			rel="noreferrer"
+			title={title}
+			className="pressable flex items-center gap-3 rounded-[1.25rem] bg-surface py-2.5 pr-4 pl-3 hover:bg-surface-hover"
 		>
-			<div className="flex size-5 shrink-0 items-center justify-center rounded-md">
+			<span className="flex size-8 shrink-0 items-center justify-center rounded-[0.75rem] bg-field">
 				{icon}
-			</div>
-			<a
-				href={url}
-				target="_blank"
-				rel="noreferrer"
-				className="min-w-0 flex-1"
-				title={title}
-			>
-				<p
+			</span>
+			<span className="min-w-0">
+				<span
 					className={cn(
-						"max-w-[20ch] truncate text-xs",
-						read ? "text-white/35 line-through" : "text-white/85",
+						"block max-w-[22ch] truncate text-[13px] font-semibold",
+						read ? "text-muted line-through" : "text-fg",
 					)}
 				>
 					{title}
-				</p>
-				<p className="truncate text-[10px] text-white/40">
+				</span>
+				<span className="block truncate text-xs text-muted">
 					{description || formatUrl(url)}
-				</p>
-			</a>
-		</div>
+				</span>
+			</span>
+		</a>
 	)
 }

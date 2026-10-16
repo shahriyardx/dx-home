@@ -24,7 +24,7 @@ const SingleTab = ({ tab }: Props) => {
 						<Favicon
 							url={tab.url}
 							size={20}
-							className="w-5 h-5 object-cover shrink-0 rounded-md"
+							className="size-5 shrink-0 rounded-md object-cover"
 						/>
 					}
 					title={tab.title}
@@ -32,10 +32,7 @@ const SingleTab = ({ tab }: Props) => {
 				/>
 			</ContextMenuTrigger>
 			<ContextMenuContent>
-				<ContextMenuItem
-					variant="destructive"
-					onMouseDown={() => deleteTab(tab.id)}
-				>
+				<ContextMenuItem danger onClick={() => deleteTab(tab.id)}>
 					Delete
 				</ContextMenuItem>
 			</ContextMenuContent>

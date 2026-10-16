@@ -1,8 +1,9 @@
 import type { RightPanelSection } from "@/entrypoints/newtab/right-panel-context"
 import { useState, useMemo } from "react"
 import { useTasksContext } from "@/features/tasks/tasks-context"
-import { Calendar, CalendarDayButton } from "@/shared/ui/calendar"
 import { ListTodo, Trash2 } from "lucide-react"
+import { Button } from "@/shared/ui/button"
+import { Calendar } from "@/shared/ui/calendar"
 
 type Props = {
 	onNavigate: (section: RightPanelSection) => void
@@ -41,84 +42,71 @@ const CalendarView = ({ onNavigate }: Props) => {
 	const selectedTasks = selectedKey ? taskDates.get(selectedKey) || [] : []
 
 	return (
-		<div className="flex flex-col h-full pb-20">
-			<div className="p-6 pb-4 shrink-0">
-				<div className="flex items-center gap-2">
-					<button
-						type="button"
-						onClick={() => onNavigate("tasks")}
-						className="p-1 rounded-md text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent transition-colors cursor-pointer"
-						title="Show Tasks"
-					>
-						<ListTodo size={20} />
-					</button>
-					<h1 className="text-lg font-semibold">Calendar</h1>
-				</div>
+		<div className="flex flex-col p-5 pb-20">
+			<div className="mb-3 flex items-center gap-1">
+				<h1 className="flex-1 ps-1 text-2xl font-bold tracking-tight">
+					Calendar
+				</h1>
+				<Button
+					variant="ghost"
+					size="icon"
+					title="Tasks"
+					onClick={() => onNavigate("tasks")}
+				>
+					<ListTodo />
+				</Button>
 			</div>
 
-			<div className="space-y-4">
-				<Calendar
-					className="w-full bg-transparent border-t"
-					modifiers={{ hasTask: datesWithTasks }}
-					mode="single"
-					selected={selectedDate}
-					onSelect={(date) => setSelectedDate(date)}
-					components={{
-						DayButton: (props) => {
-							const dot = props.modifiers?.hasTask
-							return (
-								<div className="relative w-full h-full flex">
-									<CalendarDayButton {...props} />
-									{dot && (
-										<span className="absolute bottom-2 left-1/2 -translate-x-1/2 size-1 rounded-full bg-primary" />
-									)}
-								</div>
-							)
-						},
-					}}
-				/>
-				{selectedTasks.length > 0 && (
-					<div className="space-y-2 pb-2 border-t p-6">
-						<p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-							{selectedDate?.toLocaleDateString(undefined, {
-								weekday: "short",
-								month: "short",
-								day: "numeric",
-							})}
-						</p>
-						{selectedTasks.map((task) => (
-							<div
-								key={task.id}
-								className="flex items-start gap-3 p-3 border-l-2 border-primary/30 bg-secondary/20 rounded-r-md group w-full"
-							>
-								<div className="flex-1 min-w-0">
-									<p className="text-xs text-foreground/80 whitespace-normal truncate">
-										{task.title}
+			<Calendar
+				className="-mx-3"
+				mode="single"
+				selected={selectedDate}
+				onSelect={setSelectedDate}
+				modifiers={{ hasTask: datesWithTasks }}
+				modifiersClassNames={{
+					hasTask:
+						"after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-primary",
+				}}
+			/>
+
+			{selectedTasks.length > 0 && (
+				<div className="fade-in mt-4 flex flex-col gap-2">
+					<p className="ps-1 text-[13px] font-semibold text-muted">
+						{selectedDate?.toLocaleDateString(undefined, {
+							weekday: "long",
+							month: "long",
+							day: "numeric",
+						})}
+					</p>
+					{selectedTasks.map((task) => (
+						<div
+							key={task.id}
+							className="group flex items-start gap-3 rounded-[1.25rem] bg-field p-4"
+						>
+							<div className="min-w-0 flex-1">
+								<p className="text-sm font-semibold">{task.title}</p>
+								{task.deadline && (
+									<p className="mt-0.5 text-xs text-muted">
+										{task.deadline.toLocaleTimeString(undefined, {
+											hour: "numeric",
+											minute: "2-digit",
+										})}
 									</p>
-									{task.deadline && (
-										<p className="text-[10px] text-muted-foreground/60 mt-0.5">
-											{task.deadline.toLocaleDateString(undefined, {
-												month: "long",
-												day: "numeric",
-												year: "numeric",
-												hour: "numeric",
-												minute: "2-digit",
-											})}
-										</p>
-									)}
-								</div>
-								<button
-									type="button"
-									onClick={() => deleteTask(task.id)}
-									className="p-0.5 rounded opacity-0 group-hover:opacity-100 text-muted-foreground/30 hover:text-destructive transition-colors cursor-pointer shrink-0 mt-0.5"
-								>
-									<Trash2 className="size-3" />
-								</button>
+								)}
 							</div>
-						))}
-					</div>
-				)}
-			</div>
+							<Button
+								variant="ghost"
+								size="icon-sm"
+								title="Delete"
+								className="-my-1 -me-1 opacity-0 group-hover:opacity-100 hover:text-danger"
+								onClick={() => deleteTask(task.id)}
+							>
+								<Trash2 />
+							</Button>
+						</div>
+					))}
+				</div>
+			)}
 		</div>
 	)
 }

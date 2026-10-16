@@ -1,4 +1,4 @@
-import { useBackground } from "@/features/backgrounds"
+import { useBackground, useSeed } from "@/features/backgrounds"
 import { useNewtabSettings } from "@/features/settings"
 import { useIsMobile } from "@/shared/hooks/use-is-mobile"
 import { cssUrl } from "@/shared/lib/utils"
@@ -30,6 +30,7 @@ const App = () => {
 	const { active: bg } = useBackground()
 	const { settings } = useNewtabSettings()
 	const isMobile = useIsMobile()
+	useSeed()
 	const {
 		value: savedWidth,
 		setValue: saveWidth,

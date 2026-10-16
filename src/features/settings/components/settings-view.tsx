@@ -8,53 +8,28 @@ import {
 	requestLocalhostAccess,
 	revokeLocalhostAccess,
 } from "@/features/dev-servers"
-import { cn } from "@/shared/lib/utils"
+import { Switch } from "@/shared/ui/switch"
 
 type Section = {
 	key: keyof NewtabSettings
 	label: string
-	desc: string
+	desc?: string
 }
 
 const SECTIONS: Section[] = [
-	{ key: "showClock", label: "Clock", desc: "Current time display" },
-	{ key: "showSearch", label: "Search Bar", desc: "Search the web" },
-	{ key: "showBookmarks", label: "Bookmarks", desc: "Saved site shortcuts" },
-	{ key: "showRecentTabs", label: "Recent Tabs", desc: "Recently closed tabs" },
-	{
-		key: "showRightPanel",
-		label: "Right Panel",
-		desc: "Right sidebar content",
-	},
-	{ key: "showReadingList", label: "Reading List", desc: "Saved pages" },
+	{ key: "showClock", label: "Clock" },
+	{ key: "showSearch", label: "Search" },
+	{ key: "showBookmarks", label: "Bookmarks" },
+	{ key: "showRecentTabs", label: "Recent tabs" },
+	{ key: "showRightPanel", label: "Tasks panel" },
+	{ key: "showReadingList", label: "Reading list" },
+	// The one label users can't guess from its name.
 	{
 		key: "showDevServers",
-		label: "Dev Servers",
-		desc: "Find local HTTP servers",
+		label: "Dev servers",
+		desc: "Finds servers on localhost",
 	},
 ]
-
-function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
-	return (
-		<button
-			type="button"
-			onClick={onToggle}
-			className={cn(
-				"relative inline-flex h-4 w-7 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-				on ? "bg-primary" : "bg-input",
-			)}
-			role="switch"
-			aria-checked={on}
-		>
-			<span
-				className={cn(
-					"pointer-events-none block size-3 rounded-full bg-background shadow-sm ring-0 transition-transform",
-					on ? "translate-x-3" : "translate-x-0",
-				)}
-			/>
-		</button>
-	)
-}
 
 export function SettingsView() {
 	const { settings, updateSetting } = useNewtabSettings()
@@ -96,39 +71,42 @@ export function SettingsView() {
 	const needsAccess = settings.showDevServers && localhostAccess === false
 
 	return (
-		<div>
-			<div className="space-y-2">
-				{SECTIONS.map((section) => {
-					const isDevServers = section.key === "showDevServers"
-					const on = isDevServers
-						? settings.showDevServers && localhostAccess === true
-						: settings[section.key]
+		<div className="flex flex-col gap-1">
+			{SECTIONS.map((section) => {
+				const isDevServers = section.key === "showDevServers"
+				const on = isDevServers ? devServersOn : settings[section.key]
+				const desc =
+					isDevServers && needsAccess
+						? "Needs access to localhost"
+						: section.desc
 
-					return (
-						<div
-							key={section.key}
-							className="flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent transition-colors"
-						>
-							<div className="flex-1 min-w-0">
-								<p className="text-sm font-medium">{section.label}</p>
-								<p className="text-xs text-muted-foreground truncate">
-									{isDevServers && needsAccess
-										? "Allow access to localhost to use this"
-										: section.desc}
-								</p>
-							</div>
-							<Toggle
-								on={on}
-								onToggle={() =>
-									isDevServers
-										? toggleDevServers()
-										: updateSetting(section.key, !settings[section.key])
-								}
-							/>
-						</div>
-					)
-				})}
-			</div>
+				return (
+					// biome-ignore lint/a11y/noLabelWithoutControl: Switch renders the control; wrapping it is Base UI's documented label pattern.
+					<label
+						key={section.key}
+						className="flex items-center gap-3 rounded-[1.25rem] px-3 py-2.5 transition-colors hover:bg-surface-hover"
+					>
+						<span className="min-w-0 flex-1">
+							<span className="block text-sm font-semibold">
+								{section.label}
+							</span>
+							{desc && (
+								<span className="block truncate text-xs text-muted">
+									{desc}
+								</span>
+							)}
+						</span>
+						<Switch
+							checked={on}
+							onCheckedChange={() =>
+								isDevServers
+									? toggleDevServers()
+									: updateSetting(section.key, !settings[section.key])
+							}
+						/>
+					</label>
+				)
+			})}
 		</div>
 	)
 }

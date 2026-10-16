@@ -1,8 +1,6 @@
-import { Controller } from "react-hook-form"
-import { Input } from "@/shared/ui/input"
-import { Field, FieldContent, FieldLabel, FieldError } from "@/shared/ui/field"
-import type { UseFormReturn } from "react-hook-form"
+import { Controller, type UseFormReturn } from "react-hook-form"
 import type { BookmarkType } from "@/features/bookmarks/schema"
+import { TextField } from "@/shared/ui/text-field"
 
 const BookmarkForm = ({
 	form,
@@ -12,36 +10,32 @@ const BookmarkForm = ({
 	handleSubmit: (values: BookmarkType) => void
 }) => {
 	return (
-		<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+		<form
+			onSubmit={form.handleSubmit(handleSubmit)}
+			className="flex flex-col gap-4"
+		>
 			<Controller
 				name="label"
 				control={form.control}
 				render={({ field, fieldState }) => (
-					<Field data-invalid={fieldState.invalid}>
-						<FieldLabel htmlFor={field.name}>Name</FieldLabel>
-						<FieldContent>
-							<Input {...field} id={field.name} placeholder="Example" />
-							{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-						</FieldContent>
-					</Field>
+					<TextField
+						{...field}
+						label="Name"
+						placeholder="Example"
+						error={fieldState.error?.message}
+					/>
 				)}
 			/>
-
 			<Controller
 				name="url"
 				control={form.control}
 				render={({ field, fieldState }) => (
-					<Field data-invalid={fieldState.invalid}>
-						<FieldLabel htmlFor={field.name}>URL</FieldLabel>
-						<FieldContent>
-							<Input
-								{...field}
-								id={field.name}
-								placeholder="https://example.com"
-							/>
-							{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-						</FieldContent>
-					</Field>
+					<TextField
+						{...field}
+						label="URL"
+						placeholder="https://example.com"
+						error={fieldState.error?.message}
+					/>
 				)}
 			/>
 		</form>

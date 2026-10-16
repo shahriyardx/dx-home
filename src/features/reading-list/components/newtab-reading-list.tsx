@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useReadingList } from "@/features/reading-list/use-reading-list"
 import { BookOpen, ChevronLeft, ChevronRight } from "lucide-react"
 import { EmptyState, SectionHeader } from "@/shared/components/section-header"
+import { buttonClass } from "@/shared/ui/button"
 import SingleReadingItem from "@/features/reading-list/components/single-reading-item"
 
 const PAGE_SIZE = 10
@@ -15,29 +16,26 @@ function Pager({
 	totalPages: number
 	onChange: (page: number) => void
 }) {
-	const step =
-		"cursor-pointer rounded p-0.5 text-white/30 transition-colors hover:text-white/70 disabled:cursor-not-allowed disabled:opacity-25"
-
 	return (
-		<div className="flex items-center gap-1">
+		<div className="flex items-center gap-1.5">
 			<button
 				type="button"
 				onClick={() => onChange(Math.max(0, page - 1))}
 				disabled={page === 0}
-				className={step}
+				className={buttonClass("neutral", "icon-sm")}
 			>
-				<ChevronLeft className="size-3" />
+				<ChevronLeft />
 			</button>
-			<span className="font-mono text-[10px] tabular-nums text-white/35">
+			<span className="on-wallpaper text-xs font-semibold tabular-nums text-white/85">
 				{page + 1}/{totalPages}
 			</span>
 			<button
 				type="button"
 				onClick={() => onChange(Math.min(totalPages - 1, page + 1))}
 				disabled={page >= totalPages - 1}
-				className={step}
+				className={buttonClass("neutral", "icon-sm")}
 			>
-				<ChevronRight className="size-3" />
+				<ChevronRight />
 			</button>
 		</div>
 	)
@@ -68,10 +66,10 @@ export function NewtabReadingList({ tabbed }: { tabbed?: boolean }) {
 				pager && <div className="mb-3 flex justify-end">{pager}</div>
 			) : (
 				<SectionHeader icon={BookOpen} action={pager}>
-					Reading List
+					Reading list
 				</SectionHeader>
 			)}
-			<div className="flex flex-wrap items-center gap-1.5">
+			<div className="flex flex-wrap items-center gap-2">
 				{pageItems.map((item) => (
 					<SingleReadingItem
 						key={item.id}

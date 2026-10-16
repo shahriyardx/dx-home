@@ -15,9 +15,16 @@ const Clock = () => {
 	const mm = String(now.getMinutes()).padStart(2, "0")
 	const ampm = h >= 12 ? "PM" : "AM"
 
-	const time = clockOnly
-		? `${String(h12).padStart(2, "0")}:${mm}:${String(now.getSeconds()).padStart(2, "0")}`
-		: `${h12}:${mm}`
+	const hours = clockOnly ? String(h12).padStart(2, "0") : String(h12)
+	const ss = String(now.getSeconds()).padStart(2, "0")
+
+	// Thin and lifted: a bold colon at this size reads as two holes punched in
+	// the numbers, and Roboto's sits a little low against lining digits.
+	const colon = (
+		<span className="-mx-[0.01em] inline-block -translate-y-[0.06em] font-light text-white/40">
+			:
+		</span>
+	)
 
 	return (
 		<button
@@ -25,43 +32,42 @@ const Clock = () => {
 			onClick={() => setClockOnly((v) => !v)}
 			title={clockOnly ? "Exit focus" : "Focus the clock"}
 			className={cn(
-				"group block w-fit cursor-pointer select-none text-left",
+				"block w-fit select-none text-left",
 				clockOnly &&
-					"fixed inset-0 z-50 flex w-full flex-col items-center justify-center bg-black/25 backdrop-blur-3xl animate-in fade-in duration-500 ease-smooth",
+					"fade-in fixed inset-0 z-50 flex w-full flex-col items-center justify-center bg-black/30 backdrop-blur-3xl",
 			)}
 		>
 			{/* tabular-nums so the width does not jitter as the minute ticks over. */}
 			<h1
 				className={cn(
-					"on-wallpaper font-semibold tabular-nums text-white",
-					"tracking-tighter",
-					// Focus mode has the whole window to work with; the old 8rem cap
-					// left it barely larger than the inline clock, which made the mode
-					// look broken rather than focused. vw drives it, the rem cap only
+					"on-wallpaper flex items-baseline font-semibold tracking-tight tabular-nums",
+					// Focus mode has the whole window; vw drives it, the rem cap only
 					// stops it overflowing an ultrawide.
 					clockOnly
 						? "text-[min(16vw,12rem)] leading-[0.85]"
-						: "text-7xl leading-none lg:text-8xl",
+						: "text-8xl leading-none lg:text-9xl",
 				)}
 			>
-				{time}
-				{!clockOnly && (
-					<span className="ms-3 align-top text-2xl font-medium tracking-normal text-white/45 lg:text-3xl">
+				<span className="text-white">{hours}</span>
+				{colon}
+				{/* Minutes take the wallpaper's accent: the clock belongs to the theme. */}
+				<span className="text-primary">{mm}</span>
+				{clockOnly ? (
+					<>
+						{colon}
+						<span className="text-white/60">{ss}</span>
+					</>
+				) : (
+					<span className="ms-4 text-2xl font-semibold tracking-normal text-white/60 lg:text-3xl">
 						{ampm}
 					</span>
 				)}
 			</h1>
 
-			{/*
-			 * Digits have no descenders, so ~20% of the line box under them is
-			 * empty. At 18rem that dead space *is* the gap — margin has to come off
-			 * to compensate, not go on.
-			 */}
 			<p
 				className={cn(
-					"on-wallpaper font-medium uppercase text-white/55",
-					"mt-3 text-[0.68rem] tracking-[0.3em]",
-					clockOnly && "mt-2 text-xs tracking-[0.4em]",
+					"on-wallpaper mt-4 text-lg font-medium text-white/80",
+					clockOnly && "mt-6 text-xl",
 				)}
 			>
 				{now.toLocaleDateString(undefined, {

@@ -1,6 +1,6 @@
 import { Search, Check } from "lucide-react"
-import { Input } from "@/shared/ui/input"
-import { cn, openExternal } from "@/shared/lib/utils"
+import { Input } from "@base-ui/react/input"
+import { openExternal } from "@/shared/lib/utils"
 import { resolveAction, type SearchAction } from "@/features/search/lib/actions"
 import { useMemo, useState } from "react"
 
@@ -40,52 +40,42 @@ const SearchBar = () => {
 
 	return (
 		<div className="relative">
+			<Search className="pointer-events-none absolute top-1/2 left-5 size-5 -translate-y-1/2 text-muted" />
+			{/* Half-height radius, not rounded-full, so it can tighten on focus. */}
 			<Input
 				placeholder="Search, calculate, or enter address"
-				className={cn(
-					// dark:bg-glass is not redundant: Input ships dark:bg-input/30, and
-					// `.dark .x` outranks a plain utility, so .glass's tint loses.
-					"glass h-11 rounded-xl pr-10 pl-4 dark:bg-glass",
-					"text-sm text-white/90 placeholder:text-white/45",
-					"transition-[border-color,background-color] duration-200",
-					"hover:border-glass-border-lit",
-					"focus-visible:border-glass-border-lit focus-visible:ring-0",
-				)}
+				className="h-14 w-full rounded-surface bg-surface pr-5 pl-14 text-[15px] text-fg outline-none transition-[background-color,border-radius] placeholder:text-muted hover:bg-surface-hover focus:rounded-[1.25rem] focus:bg-surface-hover"
 				value={value}
-				onChange={(e) => setValue(e.target.value)}
+				onValueChange={setValue}
 				onKeyDown={handleKeyDown}
 				spellCheck={false}
 				autoComplete="off"
 			/>
-			<Search
-				className="absolute top-1/2 right-3.5 size-4 -translate-y-1/2 cursor-pointer text-white/35 transition-colors hover:text-white/70"
-				onClick={() => run(action)}
-			/>
 
 			{action?.kind === "calc" && (
-				<div className="pointer-events-none absolute top-1/2 right-10 flex -translate-y-1/2 items-center gap-2">
-					<span className="font-mono text-sm tabular-nums text-white/90">
+				<div className="pointer-events-none absolute top-1/2 right-5 flex -translate-y-1/2 items-center gap-2">
+					<span className="font-mono text-sm tabular-nums text-fg">
 						= {action.result}
 					</span>
-					<span className="text-[10px] tracking-wide text-white/35">
-						{copied ? <Check className="size-3 text-white/80" /> : action.hint}
+					<span className="text-xs text-muted">
+						{copied ? <Check className="size-3.5 text-primary" /> : action.hint}
 					</span>
 				</div>
 			)}
 
 			{action?.kind === "bang-list" && action.matches.length > 0 && (
-				<div className="glass-overlay absolute top-full right-0 left-0 z-20 mt-2 rounded-xl p-1.5">
+				<div className="elevated fade-in absolute top-full right-0 left-0 z-20 mt-2 rounded-menu bg-overlay p-1.5">
 					{action.matches.map((bang) => (
 						<button
 							type="button"
 							key={bang.key}
 							onMouseDown={() => setValue(`!${bang.key} `)}
-							className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-2.5 py-1.5 text-left transition-colors hover:bg-white/8"
+							className="flex h-9 w-full items-center gap-3 rounded-field px-3 text-left hover:bg-field"
 						>
-							<span className="shrink-0 font-mono text-xs text-white/90">
+							<span className="shrink-0 font-mono text-[13px] text-fg">
 								!{bang.key}
 							</span>
-							<span className="truncate text-xs text-white/45">
+							<span className="truncate text-[13px] text-muted">
 								{bang.name}
 							</span>
 						</button>
@@ -94,7 +84,7 @@ const SearchBar = () => {
 			)}
 
 			{(action?.kind === "open" || action?.kind === "search") && (
-				<p className="absolute top-full left-1 mt-1.5 max-w-full truncate text-[10px] tracking-wide text-white/35">
+				<p className="on-wallpaper absolute top-full left-5 mt-2 max-w-full truncate text-xs text-white/70">
 					{action.hint}
 				</p>
 			)}

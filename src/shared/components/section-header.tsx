@@ -1,10 +1,6 @@
 import type { LucideIcon } from "lucide-react"
 
-/**
- * The one label style on the newtab. Wide letter-spacing at a small size reads
- * as a quiet system label rather than as content — it should recede behind the
- * clock and the wallpaper, never compete with them.
- */
+/** Section label on the wallpaper. Small and semibold; it never competes with the clock. */
 export function SectionHeader({
 	icon: Icon,
 	children,
@@ -16,8 +12,8 @@ export function SectionHeader({
 }) {
 	return (
 		<div className="mb-3 flex items-center gap-2">
-			<Icon className="on-wallpaper size-3 shrink-0 text-white/50" />
-			<h3 className="on-wallpaper text-[10px] font-semibold tracking-[0.2em] text-white/55 uppercase">
+			<Icon className="on-wallpaper size-4 shrink-0 text-white/70" />
+			<h3 className="on-wallpaper text-[13px] font-semibold text-white/85">
 				{children}
 			</h3>
 			{action ? <div className="ml-auto">{action}</div> : null}
@@ -25,11 +21,7 @@ export function SectionHeader({
 	)
 }
 
-/**
- * Restrained, but never below legible. These sit directly on the wallpaper with
- * no panel to tint it, so they carry their own shadow — at white/30 over a
- * bright photo this text simply disappeared.
- */
+/** Text on bare wallpaper carries its own shadow; at low alpha it vanishes on a bright photo. */
 export function EmptyState({ children }: { children: React.ReactNode }) {
-	return <p className="on-wallpaper py-1 text-xs text-white/50">{children}</p>
+	return <p className="on-wallpaper py-1 text-sm text-white/70">{children}</p>
 }

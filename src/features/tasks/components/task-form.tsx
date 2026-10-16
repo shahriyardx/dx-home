@@ -1,9 +1,6 @@
 import { useCallback } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Input } from "@/shared/ui/input"
-import { Textarea } from "@/shared/ui/textarea"
-import { Field, FieldContent, FieldLabel, FieldError } from "@/shared/ui/field"
 import { taskSchema, type TaskType } from "@/features/tasks/schema"
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover"
 import { Button } from "@/shared/ui/button"
@@ -11,7 +8,8 @@ import { cn } from "@/shared/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/shared/ui/calendar"
-import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area"
+import { ScrollArea } from "@/shared/ui/scroll-area"
+import { fieldClass, TextField } from "@/shared/ui/text-field"
 import { useTasksContext } from "@/features/tasks/tasks-context"
 
 type Props = {
@@ -90,23 +88,27 @@ const TaskForm = ({ onSuccess, defaultValues, onSubmit }: Props) => {
 
 	const deadlineValue = form.watch("deadline")
 
+	const timeButton = (active: boolean | undefined) =>
+		cn(
+			"pressable h-9 w-12 shrink-0 rounded-field text-sm font-medium",
+			active ? "bg-primary text-on-primary" : "hover:bg-field",
+		)
+
 	return (
-		<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+		<form
+			onSubmit={form.handleSubmit(handleSubmit)}
+			className="flex flex-col gap-4"
+		>
 			<Controller
 				name="title"
 				control={form.control}
 				render={({ field, fieldState }) => (
-					<Field data-invalid={fieldState.invalid}>
-						<FieldLabel htmlFor={field.name}>Title</FieldLabel>
-						<FieldContent>
-							<Input
-								{...field}
-								id={field.name}
-								placeholder="What needs to be done?"
-							/>
-							{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-						</FieldContent>
-					</Field>
+					<TextField
+						{...field}
+						label="Title"
+						placeholder="What needs to be done?"
+						error={fieldState.error?.message}
+					/>
 				)}
 			/>
 
@@ -114,16 +116,12 @@ const TaskForm = ({ onSuccess, defaultValues, onSubmit }: Props) => {
 				name="description"
 				control={form.control}
 				render={({ field }) => (
-					<Field>
-						<FieldLabel htmlFor={field.name}>Description</FieldLabel>
-						<FieldContent>
-							<Textarea
-								{...field}
-								id={field.name}
-								placeholder="Optional details..."
-							/>
-						</FieldContent>
-					</Field>
+					<TextField
+						{...field}
+						multiline
+						label="Description"
+						placeholder="Optional"
+					/>
 				)}
 			/>
 
@@ -131,131 +129,106 @@ const TaskForm = ({ onSuccess, defaultValues, onSubmit }: Props) => {
 				name="deadline"
 				control={form.control}
 				render={({ field }) => (
-					<Field>
-						<FieldLabel htmlFor={field.name}>Deadline</FieldLabel>
-						<FieldContent>
-							<Popover>
-								<PopoverTrigger asChild>
-									<Button
-										variant="outline"
-										className={cn(
-											"w-full pl-3 text-left font-normal",
-											!field.value && "text-muted-foreground",
-										)}
-									>
-										{field.value ? (
-											format(field.value, "MM/dd/yyyy hh:mm aa")
-										) : (
-											<span>No deadline</span>
-										)}
-										<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-									</Button>
-								</PopoverTrigger>
-								<PopoverContent className="w-auto p-0">
-									<div className="sm:flex">
-										<Calendar
-											mode="single"
-											selected={field.value}
-											onSelect={handleDateSelect}
-											autoFocus
-										/>
-										<div className="flex flex-col sm:flex-row sm:h-75 divide-y sm:divide-y-0 sm:divide-x">
-											<ScrollArea className="w-64 sm:w-auto">
-												<div className="flex sm:flex-col p-2">
-													{HOURS.toReversed().map((hour) => (
-														<Button
-															key={hour}
-															size="icon"
-															variant={
-																deadlineValue &&
-																deadlineValue.getHours() % 12 === hour % 12
-																	? "default"
-																	: "ghost"
-															}
-															className="sm:w-full shrink-0 aspect-square"
-															onClick={() =>
-																handleTimeChange("hour", hour.toString())
-															}
-														>
-															{hour}
-														</Button>
-													))}
-												</div>
-												<ScrollBar
-													orientation="horizontal"
-													className="sm:hidden"
-												/>
-											</ScrollArea>
-											<ScrollArea className="w-64 sm:w-auto">
-												<div className="flex sm:flex-col p-2">
-													{MINUTES.map((minute) => (
-														<Button
-															key={minute}
-															size="icon"
-															variant={
-																deadlineValue &&
-																deadlineValue.getMinutes() === minute
-																	? "default"
-																	: "ghost"
-															}
-															className="sm:w-full shrink-0 aspect-square"
-															onClick={() =>
-																handleTimeChange("minute", minute.toString())
-															}
-														>
-															{minute.toString().padStart(2, "0")}
-														</Button>
-													))}
-												</div>
-												<ScrollBar
-													orientation="horizontal"
-													className="sm:hidden"
-												/>
-											</ScrollArea>
-											<ScrollArea>
-												<div className="flex sm:flex-col p-2">
-													{AMPM.map((ampm) => (
-														<Button
-															key={ampm}
-															size="icon"
-															variant={
-																deadlineValue &&
-																((ampm === "AM" &&
-																	deadlineValue.getHours() < 12) ||
-																	(ampm === "PM" &&
-																		deadlineValue.getHours() >= 12))
-																	? "default"
-																	: "ghost"
-															}
-															className="sm:w-full shrink-0 aspect-square"
-															onClick={() => handleTimeChange("ampm", ampm)}
-														>
-															{ampm}
-														</Button>
-													))}
-												</div>
-											</ScrollArea>
+					<div className="flex flex-col gap-1.5">
+						<span className="text-[13px] font-semibold text-muted">
+							Deadline
+						</span>
+						<Popover>
+							<PopoverTrigger
+								className={cn(
+									fieldClass,
+									"flex h-11 items-center text-left",
+									!field.value && "text-muted",
+								)}
+							>
+								{field.value
+									? format(field.value, "MMM d, yyyy · h:mm aa")
+									: "No deadline"}
+								<CalendarIcon className="ml-auto size-4 text-muted" />
+							</PopoverTrigger>
+							<PopoverContent className="w-auto">
+								<div className="flex">
+									<Calendar
+										mode="single"
+										selected={field.value}
+										onSelect={handleDateSelect}
+										autoFocus
+									/>
+									<div className="flex h-[19rem] gap-1 py-3 pe-3">
+										<ScrollArea className="h-full">
+											<div className="flex flex-col gap-0.5">
+												{HOURS.toReversed().map((hour) => (
+													<button
+														type="button"
+														key={hour}
+														className={timeButton(
+															deadlineValue &&
+																deadlineValue.getHours() % 12 === hour % 12,
+														)}
+														onClick={() =>
+															handleTimeChange("hour", hour.toString())
+														}
+													>
+														{hour}
+													</button>
+												))}
+											</div>
+										</ScrollArea>
+										<ScrollArea className="h-full">
+											<div className="flex flex-col gap-0.5">
+												{MINUTES.map((minute) => (
+													<button
+														type="button"
+														key={minute}
+														className={timeButton(
+															deadlineValue?.getMinutes() === minute,
+														)}
+														onClick={() =>
+															handleTimeChange("minute", minute.toString())
+														}
+													>
+														{minute.toString().padStart(2, "0")}
+													</button>
+												))}
+											</div>
+										</ScrollArea>
+										<div className="flex flex-col gap-0.5">
+											{AMPM.map((ampm) => (
+												<button
+													type="button"
+													key={ampm}
+													className={timeButton(
+														deadlineValue &&
+															(ampm === "AM") === deadlineValue.getHours() < 12,
+													)}
+													onClick={() => handleTimeChange("ampm", ampm)}
+												>
+													{ampm}
+												</button>
+											))}
 										</div>
 									</div>
-									<div className="border-t border-border p-2">
-										<Button
-											variant="ghost"
-											size="sm"
-											className="w-full text-xs text-muted-foreground"
-											onClick={() => form.setValue("deadline", undefined)}
-										>
-											Clear deadline
-										</Button>
-									</div>
-								</PopoverContent>
-							</Popover>
-						</FieldContent>
-					</Field>
+								</div>
+								<div className="p-2 pt-0">
+									<Button
+										variant="ghost"
+										size="sm"
+										className="w-full"
+										onClick={() => form.setValue("deadline", undefined)}
+									>
+										Clear deadline
+									</Button>
+								</div>
+							</PopoverContent>
+						</Popover>
+					</div>
 				)}
 			/>
 
-			<div className="pt-2">
-				<Button type="submit">{defaultValues ? "Save" : "Submit"}</Button>
+			<div className="flex justify-end pt-1">
+				<Button type="submit" variant="primary">
+					{defaultValues ? "Save" : "Add task"}
+				</Button>
 			</div>
 		</form>
 	)

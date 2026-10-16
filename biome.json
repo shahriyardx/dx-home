@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!public", "!**/src/assets", "!**/src/shared/ui"]
+		"includes": ["**", "!public", "!**/src/assets"]
 	},
 	"formatter": {
 		"enabled": true,

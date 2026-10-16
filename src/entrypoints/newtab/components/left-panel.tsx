@@ -9,13 +9,14 @@ import { NewtabReadingList } from "@/features/reading-list"
 import { SectionBoundary } from "@/shared/components/error-boundary"
 import { History, BookOpen } from "lucide-react"
 import { cn } from "@/shared/lib/utils"
+import { SegmentedTabs } from "@/shared/ui/tabs"
 
 type Feed = "recentTabs" | "readingList"
 
-const FEEDS: { id: Feed; icon: typeof History; label: string }[] = [
-	{ id: "recentTabs", icon: History, label: "Recent" },
-	{ id: "readingList", icon: BookOpen, label: "Reading" },
-]
+const FEEDS = [
+	{ value: "recentTabs", label: "Recent", icon: <History /> },
+	{ value: "readingList", label: "Reading", icon: <BookOpen /> },
+] satisfies { value: Feed; label: string; icon: React.ReactNode }[]
 
 const LeftPanel = ({ fullWidth = false }: { fullWidth?: boolean }) => {
 	const { settings } = useNewtabSettings()
@@ -59,7 +60,7 @@ const LeftPanel = ({ fullWidth = false }: { fullWidth?: boolean }) => {
 						</div>
 					)}
 
-					<div className="rise-stagger mt-10 space-y-6">
+					<div className="rise-stagger mt-10 space-y-8">
 						{settings.showSearch && (
 							<SectionBoundary label="Search">
 								<SearchBar />
@@ -80,35 +81,14 @@ const LeftPanel = ({ fullWidth = false }: { fullWidth?: boolean }) => {
 
 						{bothFeeds ? (
 							<div>
-								<div className="mb-3 flex items-center gap-1">
-									{FEEDS.map((item) => {
-										const Icon = item.icon
-										const isActive = feed === item.id
-										return (
-											<button
-												type="button"
-												key={item.id}
-												onClick={() => setFeed(item.id)}
-												className={cn(
-													"flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1",
-													"text-[10px] font-semibold uppercase tracking-[0.16em]",
-													"transition-[background-color,border-color,color]",
-													isActive
-														? "glass-raised text-white/90"
-														: "on-wallpaper border border-transparent text-white/50 hover:text-white/80",
-												)}
-											>
-												<Icon className="size-3" />
-												{item.label}
-											</button>
-										)
-									})}
-								</div>
+								<SegmentedTabs
+									value={feed}
+									onChange={setFeed}
+									items={FEEDS}
+									className="mb-3 bg-surface"
+								/>
 								{/* Keyed so switching feeds remounts and fades the new one in. */}
-								<div
-									key={feed}
-									className="animate-in fade-in slide-in-from-bottom-1 duration-300 ease-smooth"
-								>
+								<div key={feed} className="fade-in">
 									<SectionBoundary
 										label={
 											feed === "recentTabs" ? "Recent tabs" : "Reading list"

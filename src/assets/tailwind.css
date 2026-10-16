@@ -1,374 +1,233 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import "@fontsource-variable/roboto-flex/standard.css";
 @import "@fontsource-variable/jetbrains-mono";
-@import "@fontsource-variable/inter";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * Design system — see docs/DESIGN.md for the rules. Tokens live here only.
+ *
+ * Every colour comes from two numbers that features/backgrounds/use-seed.ts
+ * sets on <html>: the wallpaper's dominant hue (--seed-h) and how colourful it
+ * is (--seed-c, 0–1). Lightness is fixed per token and only hue moves, so
+ * contrast is the same whatever the wallpaper — Android's dynamic colour, in
+ * OKLCH.
+ *
+ * Always dark. Surfaces are solid, so text on them never depends on the
+ * wallpaper behind.
+ */
 
-@theme inline {
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 4px);
+@property --seed-h {
+	syntax: "<number>";
+	inherits: true;
+	initial-value: 265;
+}
 
-    /* Surface colors */
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --color-card: var(--card);
-    --color-card-foreground: var(--card-foreground);
-    --color-popover: var(--popover);
-    --color-popover-foreground: var(--popover-foreground);
-
-    /* Brand colors */
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-
-    /* Utility colors */
-    --color-muted: var(--muted);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-destructive: var(--destructive);
-    --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
-
-    /* Chart colors */
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-
-    /* Glass tokens */
-    --color-glass: var(--glass);
-    --color-glass-border: var(--glass-border);
-    --color-glass-hover: var(--glass-hover);
-    --color-glass-raised: var(--glass-raised);
-    --color-glass-overlay: var(--glass-overlay);
-    --color-glass-border-lit: var(--glass-border-lit);
-    --font-heading: var(--font-sans);
-    --font-mono: "JetBrains Mono Variable", monospace;
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
-    --font-sans: 'Inter Variable', sans-serif;
-
-    /* One curve for every transition: fast start, long soft landing. Setting
-       the default upgrades every bare `transition-*` class at once. */
-    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
-    --default-transition-timing-function: var(--ease-smooth);
-    --default-transition-duration: 220ms;
+@property --seed-c {
+	syntax: "<number>";
+	inherits: true;
+	initial-value: 1;
 }
 
 :root {
-    /* Border & radius */
-    --radius: 0.625rem;
+	--c: var(--seed-c);
+	--h: var(--seed-h);
 
-    /* Light theme — warm modern palette */
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
+	/* Three tones, no outlines. Each step is lighter and slightly more tinted. */
+	--surface: oklch(0.215 calc(0.02 * var(--c)) var(--h));
+	--surface-hover: oklch(0.245 calc(0.022 * var(--c)) var(--h));
+	--field: oklch(0.285 calc(0.026 * var(--c)) var(--h));
+	--field-hover: oklch(0.32 calc(0.03 * var(--c)) var(--h));
+	--overlay: oklch(0.255 calc(0.024 * var(--c)) var(--h));
 
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
+	--fg: oklch(0.95 calc(0.01 * var(--c)) var(--h));
+	--muted: oklch(0.78 calc(0.022 * var(--c)) var(--h));
 
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
+	--primary: oklch(0.85 calc(0.02 + 0.09 * var(--c)) var(--h));
+	--on-primary: oklch(0.26 calc(0.01 + 0.06 * var(--c)) var(--h));
+	--tonal: oklch(0.4 calc(0.02 + 0.08 * var(--c)) var(--h));
+	--on-tonal: oklch(0.94 calc(0.01 + 0.04 * var(--c)) var(--h));
 
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
+	--danger: oklch(0.78 0.13 25);
+	--danger-container: oklch(0.38 0.11 25);
+	--on-danger-container: oklch(0.93 0.04 25);
 
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-
-    /* Glass — see the .dark block for why these tint dark in both themes. The
-       newtab always renders glass over a photo, never over --background. */
-    --glass: oklch(0.16 0.008 265 / 0.58);
-    --glass-border: oklch(1 0 0 / 0.12);
-    --glass-hover: oklch(0.22 0.01 265 / 0.68);
-    --glass-raised: oklch(0.24 0.01 265 / 0.5);
-    --glass-overlay: oklch(0.17 0.008 265 / 0.85);
-    --glass-border-lit: oklch(1 0 0 / 0.18);
-    --glass-blur: 20px;
-    --glass-blur-strong: 40px;
-
-    /* Chart — refined palette */
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+	color-scheme: dark;
 }
 
-.dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
+/* Only once the real seed is set, or every page load would sweep from the
+   default hue to the wallpaper's. */
+:root[data-seeded] {
+	transition:
+		--seed-h 900ms var(--ease-expressive),
+		--seed-c 900ms var(--ease-expressive);
+}
 
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
+@theme static {
+	--font-sans: "Roboto Flex Variable", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
+	/* Named by job, fixed rem, so shapes never drift with a base radius. */
+	--radius-press: 0.625rem;
+	--radius-field: 0.875rem;
+	--radius-menu: 1.25rem;
+	--radius-surface: 1.75rem;
+	--radius-sheet: 2rem;
 
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
+	/* The only curve. No overshoot: it flashes a sharp corner on radius. */
+	--ease-expressive: cubic-bezier(0.2, 0, 0, 1);
+	--default-transition-timing-function: var(--ease-expressive);
+	--default-transition-duration: 200ms;
 
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
+	--color-surface: var(--surface);
+	--color-surface-hover: var(--surface-hover);
+	--color-field: var(--field);
+	--color-field-hover: var(--field-hover);
+	--color-overlay: var(--overlay);
+	--color-fg: var(--fg);
+	--color-muted: var(--muted);
+	--color-primary: var(--primary);
+	--color-on-primary: var(--on-primary);
+	--color-tonal: var(--tonal);
+	--color-on-tonal: var(--on-tonal);
+	--color-danger: var(--danger);
+	--color-danger-container: var(--danger-container);
+	--color-on-danger-container: var(--on-danger-container);
+}
 
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
+/* Press = squash. Shared by every pressable so they all feel the same. */
+@utility pressable {
+	transition-property: scale, border-radius, background-color, color, opacity;
+	&:active:not(:disabled, [data-disabled]) {
+		scale: 0.97;
+		border-radius: var(--radius-press);
+	}
+}
 
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-
-    /*
-     * Glass, tier 2 — panels resting on the wallpaper.
-     *
-     * Tinted DARK rather than light. The wallpaper is user-chosen and can be
-     * anything: a white tint disappears against snow and takes the white text
-     * with it, while a dark tint darkens every wallpaper by the same amount, so
-     * one foreground colour stays legible over snow and forest alike.
-     *
-     * Saturation is pushed back up in the blur, because blurring a photo greys
-     * it out and the wallpaper is meant to be the hero.
-     */
-    --glass: oklch(0.16 0.008 265 / 0.58);
-    --glass-border: oklch(1 0 0 / 0.12);
-    --glass-hover: oklch(0.22 0.01 265 / 0.68);
-
-    /* Tier 3 — raised inside a panel. Reads above tier 2 without a new border. */
-    --glass-raised: oklch(0.24 0.01 265 / 0.5);
-
-    /* Tier 4 — dialogs, popovers, menus. Near-opaque: these carry dense text
-       and must not compete with whatever is behind them. */
-    --glass-overlay: oklch(0.17 0.008 265 / 0.85);
-
-    /* A brighter hairline for edges that should catch the light. */
-    --glass-border-lit: oklch(1 0 0 / 0.18);
-
-    --glass-blur: 20px;
-    --glass-blur-strong: 40px;
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+/* Overlays only: the one place a ring is allowed, for separation. */
+@utility elevated {
+	box-shadow:
+		0 0 0 1px oklch(1 0 0 / 0.05),
+		0 16px 48px -12px oklch(0 0 0 / 0.6);
 }
 
 /*
- * ── Glass system ────────────────────────────────────────────────────────────
- *
- * Depth here comes from three things layered in a fixed order, not from blur
- * alone:
- *   1. the tint          — darkens whatever wallpaper is behind it
- *   2. the blur          — separates panel from photo, saturated back up
- *   3. the specular edge — a 1px inset highlight along the top, as if lit from
- *                          above, plus a drop shadow beneath
- *
- * The third is what reads as glass rather than as a grey box. Without it the
- * panel looks painted onto the wallpaper.
- */
-
-@utility glass {
-    background-color: var(--glass);
-    backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-    border: 1px solid var(--glass-border);
-    box-shadow:
-        inset 0 1px 0 0 oklch(1 0 0 / 0.07),
-        0 8px 32px -12px oklch(0 0 0 / 0.6);
-}
-
-@utility glass-raised {
-    background-color: var(--glass-raised);
-    border: 1px solid var(--glass-border);
-    box-shadow: inset 0 1px 0 0 oklch(1 0 0 / 0.06);
-}
-
-@utility glass-overlay {
-    background-color: var(--glass-overlay);
-    backdrop-filter: blur(var(--glass-blur-strong)) saturate(1.5);
-    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(1.5);
-    border: 1px solid var(--glass-border-lit);
-    box-shadow:
-        inset 0 1px 0 0 oklch(1 0 0 / 0.09),
-        0 24px 64px -16px oklch(0 0 0 / 0.7);
-}
-
-/*
- * For text sitting directly on the wallpaper with no panel under it — the
- * clock. A blurred dark shadow rather than a hard one: it reads as depth on a
- * dark photo and as a soft edge on a bright one, without ever looking like a
- * drop shadow from 2009.
+ * For text sitting directly on the wallpaper — the clock, bookmark labels.
+ * A soft dark halo: depth on a dark photo, a readable edge on a bright one.
  */
 @utility on-wallpaper {
-    text-shadow: 0 1px 24px oklch(0 0 0 / 0.5), 0 1px 3px oklch(0 0 0 / 0.35);
+	text-shadow:
+		0 1px 24px oklch(0 0 0 / 0.5),
+		0 1px 3px oklch(0 0 0 / 0.35);
 }
 
 /*
- * A vignette behind the content column, under the panels and above the
- * wallpaper.
- *
- * Deliberately not strong enough to guarantee legibility on its own — a scrim
- * heavy enough to rescue white text over a sunlit photo is a black sheet across
- * half the window, and the wallpaper is the point of the product. It only
- * weights the column; the panels tint and the on-wallpaper shadows are what
- * actually carry contrast. Angled so the falloff follows the reading edge
- * rather than cutting a visible vertical band.
+ * Weights the reading column for text with no surface under it. Not strong
+ * enough to guarantee legibility alone — a scrim that heavy is a black sheet
+ * over the wallpaper. Anchored in rem so it tracks the fixed-width column; the
+ * 100% tail lands on the panel edge at any width.
  */
 @utility content-scrim {
-    /*
-     * Absolute stops for the dark part, a percentage for the tail.
-     *
-     * The dark region has to track the reading column, which is a fixed width
-     * (max-w-xl at px-16), so it is anchored in rem — percentages would thin it
-     * out on a narrow window and smear it across an ultrawide one. The final
-     * stop is 100% so the fade always lands exactly on the panel's right edge,
-     * at any width: capped at a fixed width it stopped partway across a wide
-     * monitor and left a bright band before the right panel.
-     */
-    background: linear-gradient(
-        100deg,
-        oklch(0 0 0 / 0.62) 0,
-        oklch(0 0 0 / 0.44) 24rem,
-        oklch(0 0 0 / 0.18) 42rem,
-        transparent 100%
-    );
+	background: linear-gradient(
+		100deg,
+		oklch(0 0 0 / 0.55) 0,
+		oklch(0 0 0 / 0.38) 24rem,
+		oklch(0 0 0 / 0.14) 42rem,
+		transparent 100%
+	);
 }
 
-/*
- * Page-load entrance. Sections settle into place one after another instead of
- * all popping in at once. Small distance, no bounce: it should read as the page
- * arriving, not as an effect.
- */
 @keyframes rise {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
 }
 
+@keyframes fade {
+	from {
+		opacity: 0;
+	}
+}
+
+/* `backwards`, never `both`: a transform left filled after the animation would
+   become the containing block for the clock's fixed focus overlay. */
 @utility rise {
-    animation: rise 700ms var(--ease-smooth) backwards;
+	animation: rise 600ms var(--ease-expressive) backwards;
+}
+
+@utility fade-in {
+	animation: fade 250ms var(--ease-expressive) backwards;
 }
 
 /* Staggers direct children. nth-child, not a prop, so sections hidden in
    settings close the gap instead of leaving a pause. */
 @utility rise-stagger {
-    & > * {
-        animation: rise 700ms var(--ease-smooth) backwards;
-    }
-    & > :nth-child(1) { animation-delay: 80ms; }
-    & > :nth-child(2) { animation-delay: 150ms; }
-    & > :nth-child(3) { animation-delay: 220ms; }
-    & > :nth-child(n + 4) { animation-delay: 290ms; }
+	& > * {
+		animation: rise 600ms var(--ease-expressive) backwards;
+	}
+	& > :nth-child(1) {
+		animation-delay: 60ms;
+	}
+	& > :nth-child(2) {
+		animation-delay: 120ms;
+	}
+	& > :nth-child(3) {
+		animation-delay: 180ms;
+	}
+	& > :nth-child(n + 4) {
+		animation-delay: 240ms;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *,
-    ::before,
-    ::after {
-        animation-duration: 0.01ms !important;
-        animation-delay: 0ms !important;
-        transition-duration: 0.01ms !important;
-    }
+	*,
+	::before,
+	::after {
+		animation-duration: 0.01ms !important;
+		animation-delay: 0ms !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/*
+ * Unlayered on purpose. Chrome injects its own stylesheet into extension pages
+ * that sets body's font to the system UI font; it is unlayered too, so a rule
+ * inside @layer base always loses to it, whatever its order. That is why the
+ * old Inter face never actually rendered.
+ */
+body {
+	font-family: var(--font-sans);
+	background: oklch(0.15 calc(0.012 * var(--c)) var(--h));
+	color: var(--fg);
+	-webkit-font-smoothing: antialiased;
 }
 
 @layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
+	button:not(:disabled),
+	[role="button"]:not([data-disabled]) {
+		cursor: pointer;
+	}
 
-    body {
-        @apply antialiased bg-background text-foreground;
-        font-family:
-            "Inter",
-            ui-sans-serif,
-            system-ui,
-            -apple-system,
-            sans-serif;
-    }
+	:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: 2px;
+	}
 
-    /* Modern custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
+	::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
 
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
 
-    ::-webkit-scrollbar-thumb {
-        background: oklch(0.55 0.015 265 / 0.25);
-        border-radius: 999px;
-    }
+	::-webkit-scrollbar-thumb {
+		background: var(--field);
+		border-radius: 3px;
+	}
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: oklch(0.55 0.015 265 / 0.4);
-    }
-
-    .dark ::-webkit-scrollbar-thumb {
-        background: oklch(1 0 0 / 0.15);
-    }
-
-    .dark ::-webkit-scrollbar-thumb:hover {
-        background: oklch(1 0 0 / 0.25);
-    }
-
-    /* Selection color */
-    ::selection {
-        background: oklch(0.42 0.155 265 / 0.2);
-    }
-
-    .dark ::selection {
-        background: oklch(0.68 0.18 265 / 0.25);
-    }
-    html {
-        @apply font-sans;
-    }
+	::selection {
+		background: var(--tonal);
+		color: var(--on-tonal);
+	}
 }

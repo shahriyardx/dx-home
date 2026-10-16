@@ -3,9 +3,15 @@ import { BookOpen, Check, Trash2 } from "lucide-react"
 import { Favicon } from "@/shared/components/favicon"
 import { cn, openExternal } from "@/shared/lib/utils"
 import { useState } from "react"
+import { Button } from "@/shared/ui/button"
+import { SegmentedTabs } from "@/shared/ui/tabs"
 
 type Filter = "all" | "unread" | "read"
-const FILTERS: Filter[] = ["all", "unread", "read"]
+const FILTERS = [
+	{ value: "all", label: "All" },
+	{ value: "unread", label: "Unread" },
+	{ value: "read", label: "Read" },
+] satisfies { value: Filter; label: string }[]
 
 export function ReadingListView() {
 	const { items, toggleRead, deleteItem } = useReadingList()
@@ -19,80 +25,63 @@ export function ReadingListView() {
 	const openLink = (url: string) => openExternal(url)
 
 	return (
-		<div className="@container">
-			<div className="flex gap-0.5 @[400px]:gap-1 border rounded-md w-max">
-				{FILTERS.map((f) => (
-					<button
-						type="button"
-						key={f}
-						onClick={() => setFilter(f)}
-						className={cn(
-							"text-[10px] px-1.5 py-0.5 rounded uppercase font-semibold transition-colors",
-							filter === f
-								? "bg-primary text-primary-foreground"
-								: "text-muted-foreground hover:text-foreground",
-						)}
-					>
-						{f}
-					</button>
-				))}
-			</div>
+		<div>
+			<SegmentedTabs value={filter} onChange={setFilter} items={FILTERS} />
 
-			{items.length === 0 ? (
-				<p className="text-xs text-muted-foreground py-3 text-center mt-2">
-					Nothing saved yet
-				</p>
-			) : filtered.length === 0 ? (
-				<p className="text-xs text-muted-foreground py-3 text-center mt-2">
-					No {filter} items
+			{filtered.length === 0 ? (
+				<p className="px-3 py-6 text-center text-sm text-muted">
+					{items.length === 0 ? "Nothing saved yet" : `No ${filter} pages`}
 				</p>
 			) : (
-				<div className="space-y-0.5 mt-2">
+				<div className="mt-3 flex flex-col gap-0.5">
 					{filtered.map((item) => (
 						<div
 							key={item.id}
 							className={cn(
-								"flex items-center gap-1.5 rounded px-1.5 py-1.5 transition-colors group hover:bg-accent border-b border-border last:border-b-0",
-								item.read && "opacity-50",
+								"group flex items-center gap-2.5 rounded-field px-2.5 py-1.5 transition-colors hover:bg-surface-hover",
+								item.read && "text-muted",
 							)}
 						>
 							{item.icon ? (
 								<img
 									src={item.icon}
 									alt=""
-									className="size-3.5 shrink-0 rounded"
+									className="size-4 shrink-0 rounded"
 								/>
 							) : (
 								<Favicon
 									url={item.url}
-									size={14}
-									className="size-3.5 shrink-0 rounded"
+									size={16}
+									className="size-4 shrink-0 rounded"
 								/>
 							)}
 							<button
 								type="button"
-								className="flex-1 truncate text-left text-xs cursor-pointer"
+								className="flex-1 truncate text-left text-[13px] font-medium"
 								onClick={() => openLink(item.url)}
 								title={item.title}
 							>
 								{item.title}
 							</button>
-							<button
-								type="button"
-								onClick={() => toggleRead(item.id)}
-								className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-muted cursor-pointer shrink-0"
-								title={item.read ? "Unread" : "Read"}
-							>
-								<Check className="size-2.5 text-muted-foreground" />
-							</button>
-							<button
-								type="button"
-								onClick={() => deleteItem(item.id)}
-								className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-muted cursor-pointer shrink-0"
-								title="Delete"
-							>
-								<Trash2 className="size-2.5 text-muted-foreground" />
-							</button>
+							<div className="flex opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									onClick={() => toggleRead(item.id)}
+									title={item.read ? "Mark unread" : "Mark read"}
+								>
+									<Check />
+								</Button>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									onClick={() => deleteItem(item.id)}
+									title="Delete"
+									className="hover:text-danger"
+								>
+									<Trash2 />
+								</Button>
+							</div>
 						</div>
 					))}
 				</div>
@@ -121,14 +110,14 @@ export function SaveCurrentPageButton() {
 	}
 
 	return (
-		<button
-			type="button"
+		<Button
+			variant="tonal"
 			onClick={saveCurrent}
 			disabled={saving}
-			className="w-full flex items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:border-ring transition-colors cursor-pointer mb-3"
+			className="mb-4 w-full"
 		>
-			<BookOpen className="size-4" />
-			{saving ? "Saving..." : "Save Current Page"}
-		</button>
+			<BookOpen />
+			{saving ? "Saving…" : "Save this page"}
+		</Button>
 	)
 }

@@ -1,48 +1,23 @@
-import * as ResizablePrimitive from "react-resizable-panels"
-
+import * as Panels from "react-resizable-panels"
 import { cn } from "@/shared/lib/utils"
 
-function ResizablePanelGroup({
-  className,
-  ...props
-}: ResizablePrimitive.GroupProps) {
-  return (
-    <ResizablePrimitive.Group
-      data-slot="resizable-panel-group"
-      className={cn(
-        "flex h-full w-full aria-[orientation=vertical]:flex-col",
-        className
-      )}
-      {...props}
-    />
-  )
+export function ResizablePanelGroup({
+	className,
+	...props
+}: Panels.GroupProps) {
+	return <Panels.Group className={cn("flex size-full", className)} {...props} />
 }
 
-function ResizablePanel({ ...props }: ResizablePrimitive.PanelProps) {
-  return <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />
-}
+export const ResizablePanel = Panels.Panel
 
-function ResizableHandle({
-  withHandle,
-  className,
-  ...props
-}: ResizablePrimitive.SeparatorProps & {
-  withHandle?: boolean
-}) {
-  return (
-    <ResizablePrimitive.Separator
-      data-slot="resizable-handle"
-      className={cn(
-        "relative flex w-px items-center justify-center bg-border ring-offset-background after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90",
-        className
-      )}
-      {...props}
-    >
-      {withHandle && (
-        <div className="z-10 flex h-6 w-1 shrink-0 rounded-lg bg-border" />
-      )}
-    </ResizablePrimitive.Separator>
-  )
+/** A wide, invisible hit area with a small grip that shows on hover. */
+export function ResizableHandle(props: Panels.SeparatorProps) {
+	return (
+		<Panels.Separator
+			className="group relative flex w-3 items-center justify-center outline-none"
+			{...props}
+		>
+			<div className="h-12 w-1 rounded-full bg-fg/0 transition-colors group-hover:bg-fg/40 group-focus-visible:bg-primary group-data-[separator=active]:bg-primary" />
+		</Panels.Separator>
+	)
 }
-
-export { ResizableHandle, ResizablePanel, ResizablePanelGroup }

@@ -4,3 +4,4 @@ export {
 	PRESETS,
 	type BackgroundPreset,
 } from "./use-background"
+export { useSeed } from "./use-seed"

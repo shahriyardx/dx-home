@@ -58,7 +58,7 @@ src/
   entrypoints/     newtab, sidepanel, background worker
   features/        backgrounds, bookmarks, clock, dev-servers,
                    reading-list, recent-tabs, search, settings, tasks
-  shared/          ui (shadcn), lib, hooks, storage, components
+  shared/          ui (Base UI primitives), lib, hooks, storage, components
 ```
 
 ### Storage

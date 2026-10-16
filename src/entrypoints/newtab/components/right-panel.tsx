@@ -25,31 +25,22 @@ const RightPanelInner = () => {
 	const SectionComponent = section?.component
 
 	return (
-		// The full-height sheet: same glass, but square and borderless except for
-		// the lit left edge, so it reads as part of the window rather than as a
-		// card floating in it.
-		<div
-			className="h-full border-0 border-l border-l-glass-border-lit"
-			style={{
-				backgroundColor: "var(--glass)",
-				backdropFilter: "blur(var(--glass-blur-strong)) saturate(1.5)",
-			}}
-		>
-			<TasksProvider>
-				<SectionBoundary label="Tasks">
-					<ScrollArea className="h-screen overflow-hidden">
-						{SectionComponent ? (
-							// Keyed so tasks <-> calendar fades rather than snaps.
-							<div
-								key={activeSection}
-								className="animate-in fade-in duration-500 ease-smooth"
-							>
-								<SectionComponent onNavigate={setActiveSection} />
-							</div>
-						) : null}
-					</ScrollArea>
-				</SectionBoundary>
-			</TasksProvider>
+		// Inset from the window edge so it reads as a sheet on the wallpaper.
+		<div className="h-screen py-3 pr-3">
+			<div className="h-full overflow-hidden rounded-sheet bg-surface">
+				<TasksProvider>
+					<SectionBoundary label="Tasks">
+						<ScrollArea className="h-full">
+							{SectionComponent ? (
+								// Keyed so tasks <-> calendar fades rather than snaps.
+								<div key={activeSection} className="fade-in">
+									<SectionComponent onNavigate={setActiveSection} />
+								</div>
+							) : null}
+						</ScrollArea>
+					</SectionBoundary>
+				</TasksProvider>
+			</div>
 		</div>
 	)
 }

@@ -2,6 +2,7 @@ import { Terminal, RefreshCw } from "lucide-react"
 import { SectionHeader } from "@/shared/components/section-header"
 import { LinkCard } from "@/shared/components/link-card"
 import { cn } from "@/shared/lib/utils"
+import { buttonClass } from "@/shared/ui/button"
 import { useDevServers } from "../use-dev-servers"
 
 export function DevServers() {
@@ -25,20 +26,20 @@ export function DevServers() {
 						type="button"
 						onClick={rescan}
 						title="Rescan"
-						className="cursor-pointer rounded p-0.5 text-white/30 transition-colors hover:text-white/70"
+						className={buttonClass("neutral", "icon-sm")}
 					>
-						<RefreshCw className={cn("size-3", scanning && "animate-spin")} />
+						<RefreshCw className={cn(scanning && "animate-spin")} />
 					</button>
 				}
 			>
-				Dev Servers
+				Dev servers
 			</SectionHeader>
 
-			<div className="flex flex-wrap items-center gap-1.5">
+			<div className="flex flex-wrap items-center gap-2">
 				{servers.map((server) => (
 					<LinkCard
 						key={server.port}
-						icon={<Terminal className="size-3.5 text-white/50" />}
+						icon={<Terminal className="size-4 text-muted" />}
 						title={server.label}
 						url={server.url}
 						description={`localhost:${server.port}`}

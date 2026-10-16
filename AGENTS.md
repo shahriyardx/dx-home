@@ -4,7 +4,7 @@ Replaces `chrome://newtab` with a dashboard: clock, command bar, bookmarks,
 dev servers, recent tabs, reading list, tasks. A sidepanel handles backgrounds,
 the reading list, and settings.
 
-**Stack**: React 19, TypeScript, WXT, Tailwind v4, Dexie (IndexedDB), shadcn/ui,
+**Stack**: React 19, TypeScript, WXT, Tailwind v4, Dexie (IndexedDB), Base UI,
 Biome, Bun test. Chrome MV3 and Firefox from the same source.
 
 ---
@@ -25,7 +25,7 @@ src/
 │   │   └── right-panel-context.tsx
 │   └── sidepanel/                  # app.tsx, main.tsx, index.html
 ├── features/
-│   ├── backgrounds/                # use-background, background-grid, PRESETS
+│   ├── backgrounds/                # use-background, use-seed (theme colour), PRESETS
 │   ├── bookmarks/                  # use-bookmarks, schema, components/
 │   ├── clock/
 │   ├── dev-servers/                # probe, ports, use-dev-servers
@@ -39,7 +39,7 @@ src/
     ├── hooks/                      # use-is-mobile
     ├── lib/                        # utils: cn, url guards, cssUrl
     ├── storage/                    # db (Dexie), item, use-storage-item
-    └── ui/                         # shadcn — biome ignores this dir
+    └── ui/                         # design-system primitives on Base UI
 ```
 
 ---
@@ -90,14 +90,15 @@ in this category.
    cache is in `storage.session`.
 2. **MV3 CSP is `script-src 'self'`.** `eval` and `new Function` do not work.
    The calculator is a hand-written parser for this reason.
-3. **`.dark .x` outranks a plain `@utility`.** shadcn ships `dark:bg-input/30`
-   on Input, which silently beat `.glass`. Check specificity before assuming a
-   utility applies.
+3. **Base UI parts compose with `render`, not `asChild`.** The rendered
+   element must accept a ref and spread the props it is given.
 4. **Calendar dates must use local getters**, never `toISOString()` — it returns
    UTC and shifts the day.
 5. **Tabs, not spaces**, everywhere. Biome enforces it.
-6. **shadcn components are vendored** and `src/shared/ui` is biome-ignored.
-   Editing them is normal; regenerating via `bun comp` will overwrite.
+6. **Chrome injects a stylesheet into extension pages** that sets `body`'s
+   font to the system font. It is unlayered, so a font rule inside
+   `@layer base` always loses. Keep the `body` rule in `tailwind.css`
+   unlayered.
 7. **`react-day-picker` v10 renamed `table` → `month_grid`.** An unknown key in
    `classNames` fails silently — the styles just never apply.
 8. **Match patterns ignore ports**, so `http://localhost/*` covers every port.
@@ -106,20 +107,14 @@ in this category.
 
 ## Design system
 
-Glass over a user-chosen wallpaper, defined in `assets/tailwind.css`.
+Own system after Material 3 Expressive, kept minimal. Rules and tokens are in
+**`docs/DESIGN.md`** — read it before touching UI. In short: solid tonal
+surfaces coloured from the wallpaper (`use-seed.ts`), no outlines, press =
+squash, one easing curve, few words.
 
-- `.glass` / `.glass-raised` / `.glass-overlay` — tiers 2, 3, 4.
-- `.on-wallpaper` — text shadow for text with no panel under it.
-- `.content-scrim` — weights the reading column.
-
-The tint is **dark in both themes on purpose**: the wallpaper can be a
-blown-out photo, and a light tint disappears against it and takes white text
-with it. Depth = tint + blur (saturated back up) + a 1px inset specular edge.
-
-Legibility is carried by the elements, not the scrim. A scrim strong enough to
-rescue white text over a sunlit photo is a black sheet over half the window,
-which defeats a wallpaper-first design. Verify contrast by rendering over a
-**bright** preset (`tulips`), not a dark one.
+Verify by rendering over a **bright** preset (`tulips`) and a dark one
+(`peaks`): the theme hue changes with each, and text on bare wallpaper must
+stay readable on both.
 
 ---
 

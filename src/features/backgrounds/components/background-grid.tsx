@@ -2,15 +2,6 @@ import { Check } from "lucide-react"
 import { cn, cssUrl } from "@/shared/lib/utils"
 import { useBackground, PRESETS } from "../use-background"
 
-function Preview({ value }: { value: string }) {
-	return (
-		<div
-			className="w-full h-full bg-cover bg-center rounded-md"
-			style={{ backgroundImage: cssUrl(value) }}
-		/>
-	)
-}
-
 export function BackgroundGrid() {
 	const { active, setBackground } = useBackground()
 
@@ -23,22 +14,23 @@ export function BackgroundGrid() {
 						type="button"
 						key={preset.id}
 						onClick={() => setBackground(preset)}
+						title={preset.name}
+						// The selected one tightens its corners: shape, not an outline,
+						// says which is active.
 						className={cn(
-							"relative aspect-video rounded-lg border-2 overflow-hidden transition-all hover:ring-2 hover:ring-ring",
-							isActive ? "border-ring ring-2 ring-ring" : "border-border",
+							"pressable relative aspect-video overflow-hidden bg-cover bg-center",
+							isActive ? "rounded-press" : "rounded-[1.25rem]",
 						)}
+						style={{ backgroundImage: cssUrl(preset.value) }}
 					>
-						<Preview value={preset.value} />
 						{isActive && (
-							<div className="absolute top-1 right-1 bg-primary text-primary-foreground rounded-full p-0.5">
-								<Check className="size-3" />
-							</div>
-						)}
-						<div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/60 to-transparent p-1.5">
-							<span className="text-[11px] text-white font-medium">
-								{preset.name}
+							<span className="absolute top-2 right-2 grid size-6 place-items-center rounded-full bg-primary text-on-primary">
+								<Check className="size-3.5" />
 							</span>
-						</div>
+						)}
+						<span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent px-2.5 pt-4 pb-2 text-left text-xs font-semibold text-white">
+							{preset.name}
+						</span>
 					</button>
 				)
 			})}

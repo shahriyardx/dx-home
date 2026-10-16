@@ -14,8 +14,8 @@ const RecentTabs = ({ tabbed }: { tabbed?: boolean }) => {
 
 	return (
 		<div>
-			{!tabbed && <SectionHeader icon={History}>Recent Tabs</SectionHeader>}
-			<div className="flex flex-wrap items-center gap-1.5">
+			{!tabbed && <SectionHeader icon={History}>Recent tabs</SectionHeader>}
+			<div className="flex flex-wrap items-center gap-2">
 				{tabs.map((tab) => (
 					<SingleTab key={tab.id} tab={tab} />
 				))}

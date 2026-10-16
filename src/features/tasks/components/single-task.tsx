@@ -4,20 +4,8 @@ import { Pencil, Trash } from "lucide-react"
 import { useTasksContext } from "@/features/tasks/tasks-context"
 import { useEffect, useState, useCallback } from "react"
 import { cn } from "@/shared/lib/utils"
-import {
-	Card,
-	CardHeader,
-	CardTitle,
-	CardAction,
-	CardDescription,
-} from "@/shared/ui/card"
 import { Button } from "@/shared/ui/button"
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@/shared/ui/dialog"
+import { Dialog, DialogContent } from "@/shared/ui/dialog"
 import TaskForm from "./task-form"
 
 type Props = {
@@ -56,77 +44,66 @@ const SingleTask = ({ task }: Props) => {
 	}, [updateCd, hasDeadline])
 
 	const urgencyColor = cn(
-		urgency === "overdue" && "text-red-500",
-		urgency === "critical" && "text-amber-500",
-		urgency === "warning" && "text-yellow-500",
-		urgency === "none" && "text-muted-foreground",
+		urgency === "overdue" && "text-danger",
+		urgency === "critical" && "text-amber-300",
+		urgency === "warning" && "text-yellow-200",
+		urgency === "none" && "text-muted",
 	)
 
 	return (
 		<>
-			<Card size="sm" className="group bg-secondary/2 backdrop-blur-2xl border">
-				<CardHeader>
-					<CardTitle>
-						<p className="text-xs font-mono">
-							{hasDeadline ? (
-								<>
-									<span className={cn(urgencyColor)}>{countdown}</span>
-									<span className="mx-1 text-muted-foreground/40">
-										&middot;
-									</span>
-									<span className="font-normal text-muted-foreground">
-										{moment(deadline).format("MMM D, h:mm A")}
-									</span>
-								</>
-							) : (
-								<span className="text-muted-foreground">
-									Created {moment(task.createdAt).fromNow()}
+			<div className="group flex items-start gap-3 rounded-[1.25rem] bg-field p-4 transition-colors hover:bg-field-hover">
+				<div className="min-w-0 flex-1">
+					<p className="text-sm font-semibold">{task.title}</p>
+					<p className="mt-0.5 text-xs text-muted">
+						{hasDeadline ? (
+							<>
+								<span className={cn("font-semibold", urgencyColor)}>
+									{countdown}
 								</span>
-							)}
-						</p>
-						<p className="text-sm">{task.title}</p>
-					</CardTitle>
-					<CardAction>
-						<div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-							<Button
-								variant="outline"
-								size="icon-xs"
-								onClick={() => setEditOpen(true)}
-							>
-								<Pencil size={12} />
-							</Button>
-							<Button
-								variant="destructive"
-								size="icon-xs"
-								onClick={() => deleteTask(task.id)}
-							>
-								<Trash size={12} />
-							</Button>
-						</div>
-					</CardAction>
+								<span className="mx-1">&middot;</span>
+								{moment(deadline).format("MMM D, h:mm A")}
+							</>
+						) : (
+							<>Created {moment(task.createdAt).fromNow()}</>
+						)}
+					</p>
 					{task.description && (
-						<CardDescription
-							className="cursor-pointer"
+						<button
+							type="button"
 							onClick={() => setDescExpanded((prev) => !prev)}
+							className={cn(
+								"mt-2 block w-full text-left text-[13px] text-muted",
+								!descExpanded && "line-clamp-1",
+							)}
 						>
-							<p
-								className={cn(
-									"text-muted-foreground text-xs",
-									!descExpanded && "line-clamp-1",
-								)}
-							>
-								{task.description}
-							</p>
-						</CardDescription>
+							{task.description}
+						</button>
 					)}
-				</CardHeader>
-			</Card>
+				</div>
+				<div className="-my-1 -me-1 flex gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+					<Button
+						variant="ghost"
+						size="icon-sm"
+						title="Edit"
+						onClick={() => setEditOpen(true)}
+					>
+						<Pencil />
+					</Button>
+					<Button
+						variant="ghost"
+						size="icon-sm"
+						title="Delete"
+						className="hover:text-danger"
+						onClick={() => deleteTask(task.id)}
+					>
+						<Trash />
+					</Button>
+				</div>
+			</div>
 
 			<Dialog open={editOpen} onOpenChange={setEditOpen}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Edit task</DialogTitle>
-					</DialogHeader>
+				<DialogContent title="Edit task">
 					<TaskForm
 						onSuccess={() => setEditOpen(false)}
 						defaultValues={{

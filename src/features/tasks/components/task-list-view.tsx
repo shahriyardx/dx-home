@@ -1,12 +1,11 @@
-import type { RightPanelSection } from "@/entrypoints/newtab/right-panel-context"
+import { CalendarDays, Plus } from "lucide-react"
 import { useState } from "react"
+import type { RightPanelSection } from "@/entrypoints/newtab/right-panel-context"
 import { useTasksContext } from "@/features/tasks/tasks-context"
 import { Button } from "@/shared/ui/button"
+import { Dialog, DialogContent, DialogTrigger } from "@/shared/ui/dialog"
 import SingleTask from "./single-task"
-import { Dialog, DialogContent, DialogHeader } from "@/shared/ui/dialog"
-import { DialogTrigger } from "@radix-ui/react-dialog"
 import TaskForm from "./task-form"
-import { Plus, CalendarDays } from "lucide-react"
 
 type Props = {
 	onNavigate: (section: RightPanelSection) => void
@@ -17,44 +16,30 @@ const TaskListView = ({ onNavigate }: Props) => {
 	const [addTaskOpen, setAddTaskOpen] = useState(false)
 
 	return (
-		<div className="flex flex-col h-full pb-20">
-			<div className="p-6 pb-4 shrink-0">
-				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-2">
-						<button
-							type="button"
-							onClick={() => onNavigate("calendar")}
-							className="p-1 rounded-md text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent transition-colors cursor-pointer"
-							title="Show Calendar"
-						>
-							<CalendarDays size={20} />
-						</button>
-						<h1 className="text-lg font-semibold">Tasks</h1>
-					</div>
-					<Dialog
-						open={addTaskOpen}
-						onOpenChange={(val) => setAddTaskOpen(val)}
-					>
-						<DialogTrigger>
-							<Button
-								size="sm"
-								variant="outline"
-								className="text-xs h-7 px-2 cursor-pointer text-muted-foreground hover:text-foreground"
-							>
-								<Plus /> New
-							</Button>
-						</DialogTrigger>
-						<DialogContent>
-							<DialogHeader>New task</DialogHeader>
-							<TaskForm onSuccess={() => setAddTaskOpen(false)} />
-						</DialogContent>
-					</Dialog>
-				</div>
+		<div className="flex flex-col p-5 pb-20">
+			<div className="mb-5 flex items-center gap-1">
+				<h1 className="flex-1 ps-1 text-2xl font-bold tracking-tight">Tasks</h1>
+				<Button
+					variant="ghost"
+					size="icon"
+					title="Calendar"
+					onClick={() => onNavigate("calendar")}
+				>
+					<CalendarDays />
+				</Button>
+				<Dialog open={addTaskOpen} onOpenChange={setAddTaskOpen}>
+					<DialogTrigger render={<Button variant="primary" />}>
+						<Plus /> New
+					</DialogTrigger>
+					<DialogContent title="New task">
+						<TaskForm onSuccess={() => setAddTaskOpen(false)} />
+					</DialogContent>
+				</Dialog>
 			</div>
 
-			<div className="space-y-3 min-h-0 px-6">
+			<div className="flex flex-col gap-2">
 				{tasks.length === 0 && (
-					<p className="text-xs text-muted-foreground/60">No tasks yet.</p>
+					<p className="ps-1 text-sm text-muted">No tasks yet.</p>
 				)}
 				{tasks.map((task) => (
 					<SingleTask key={task.id} task={task} />
