@@ -26,7 +26,7 @@ function Pager({
 			>
 				<ChevronLeft />
 			</button>
-			<span className="on-wallpaper text-xs font-semibold tabular-nums text-white/85">
+			<span className="on-wallpaper text-xs font-semibold tabular-nums text-white">
 				{page + 1}/{totalPages}
 			</span>
 			<button

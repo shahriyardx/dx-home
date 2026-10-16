@@ -47,7 +47,7 @@ const SingleBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
 						<Favicon url={bookmark.url} size={24} className="size-6" />
 					</a>
 					{/* Sits on bare wallpaper, so it carries its own shadow. */}
-					<span className="on-wallpaper max-w-16 truncate text-xs font-medium text-white/85">
+					<span className="on-wallpaper max-w-16 truncate text-xs font-semibold text-white">
 						{bookmark.label}
 					</span>
 				</ContextMenuTrigger>

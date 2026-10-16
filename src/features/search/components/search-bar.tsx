@@ -84,7 +84,7 @@ const SearchBar = () => {
 			)}
 
 			{(action?.kind === "open" || action?.kind === "search") && (
-				<p className="on-wallpaper absolute top-full left-5 mt-2 max-w-full truncate text-xs text-white/70">
+				<p className="on-wallpaper absolute top-full left-5 mt-2 max-w-full truncate text-xs font-medium text-white">
 					{action.hint}
 				</p>
 			)}

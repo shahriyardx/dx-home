@@ -36,8 +36,11 @@ export function Calendar({
 				week: "mt-1 flex w-full",
 				day: cn("relative flex flex-1 justify-center p-0", rdp.day),
 				day_button:
-					"pressable flex size-(--cell) items-center justify-center rounded-[1.25rem] text-sm font-medium hover:bg-field",
-				today: "[&>button]:text-primary [&>button]:font-bold",
+					"pressable flex size-(--cell) items-center justify-center rounded-[1.25rem] text-sm font-medium hover:bg-field-hover",
+				// Not when selected: both set the text colour at equal specificity, so
+				// today's primary text landed on the selected primary fill.
+				today:
+					"[&:not([data-selected])>button]:text-primary [&>button]:font-bold",
 				selected:
 					"[&>button]:bg-primary [&>button]:text-on-primary [&>button]:hover:bg-primary",
 				outside: "text-muted/50",

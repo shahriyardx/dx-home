@@ -21,7 +21,7 @@ const Clock = () => {
 	// Thin and lifted: a bold colon at this size reads as two holes punched in
 	// the numbers, and Roboto's sits a little low against lining digits.
 	const colon = (
-		<span className="-mx-[0.01em] inline-block -translate-y-[0.06em] font-light text-white/40">
+		<span className="-mx-[0.01em] inline-block -translate-y-[0.06em] font-light text-white/70">
 			:
 		</span>
 	)
@@ -55,10 +55,10 @@ const Clock = () => {
 				{clockOnly ? (
 					<>
 						{colon}
-						<span className="text-white/60">{ss}</span>
+						<span className="text-white/85">{ss}</span>
 					</>
 				) : (
-					<span className="ms-4 text-2xl font-semibold tracking-normal text-white/60 lg:text-3xl">
+					<span className="ms-4 text-2xl font-semibold tracking-normal text-white/85 lg:text-3xl">
 						{ampm}
 					</span>
 				)}
@@ -66,7 +66,7 @@ const Clock = () => {
 
 			<p
 				className={cn(
-					"on-wallpaper mt-4 text-lg font-medium text-white/80",
+					"on-wallpaper mt-4 text-lg font-semibold text-white",
 					clockOnly && "mt-6 text-xl",
 				)}
 			>
