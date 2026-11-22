@@ -51,7 +51,16 @@ export function NewtabReadingList({ tabbed }: { tabbed?: boolean }) {
 		if (page >= totalPages) setPage(Math.max(0, totalPages - 1))
 	}, [page, totalPages])
 
-	if (items.length === 0) return <EmptyState>Reading list empty</EmptyState>
+	if (items.length === 0)
+		return (
+			<EmptyState>
+				Reading list empty
+				{/* Matches the context menu title in background.ts. */}
+				<span className="block font-normal text-white/70">
+					Right-click any page → Save to Reading List
+				</span>
+			</EmptyState>
+		)
 
 	const pager =
 		totalPages > 1 ? (
