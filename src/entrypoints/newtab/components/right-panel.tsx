@@ -33,7 +33,11 @@ const RightPanelInner = () => {
 						<ScrollArea className="h-full">
 							{SectionComponent ? (
 								// Keyed so tasks <-> calendar fades rather than snaps.
-								<div key={activeSection} className="fade-in">
+								// Full height, so a view can centre things in the space left.
+								<div
+									key={activeSection}
+									className="pop-in flex min-h-full flex-col"
+								>
 									<SectionComponent onNavigate={setActiveSection} />
 								</div>
 							) : null}

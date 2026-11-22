@@ -47,6 +47,7 @@ interface TasksContextValue {
 	addTask: (values: TaskType) => Promise<void>
 	updateTask: (id: string, values: TaskType) => Promise<void>
 	deleteTask: (id: string) => Promise<void>
+	toggleTask: (id: string) => Promise<void>
 }
 
 const TasksContext = createContext<TasksContextValue | null>(null)
@@ -125,8 +126,21 @@ export function TasksProvider({ children }: { children: ReactNode }) {
 		[stored, write],
 	)
 
+	const toggleTask = useCallback(
+		async (id: string) => {
+			await write(
+				stored.map((task) =>
+					task.id === id ? { ...task, done: !task.done } : task,
+				),
+			)
+		},
+		[stored, write],
+	)
+
 	return (
-		<TasksContext.Provider value={{ tasks, addTask, updateTask, deleteTask }}>
+		<TasksContext.Provider
+			value={{ tasks, addTask, updateTask, deleteTask, toggleTask }}
+		>
 			{children}
 		</TasksContext.Provider>
 	)

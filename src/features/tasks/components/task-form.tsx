@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { taskSchema, type TaskType } from "@/features/tasks/schema"
 import { Button } from "@/shared/ui/button"
 import { TextField } from "@/shared/ui/text-field"
-import { DeadlinePicker } from "./deadline-picker"
+import { DateChip, TimeChip } from "./deadline-picker"
 import { useTasksContext } from "@/features/tasks/tasks-context"
 
 type Props = {
@@ -77,7 +77,17 @@ const TaskForm = ({ onSuccess, defaultValues, onSubmit }: Props) => {
 				name="deadline"
 				control={form.control}
 				render={({ field }) => (
-					<DeadlinePicker value={field.value} onChange={field.onChange} />
+					<div className="flex flex-col gap-1.5">
+						<span className="text-[13px] font-semibold text-muted">
+							Deadline
+						</span>
+						<div className="flex gap-1.5">
+							<DateChip value={field.value} onChange={field.onChange} />
+							{field.value && (
+								<TimeChip value={field.value} onChange={field.onChange} />
+							)}
+						</div>
+					</div>
 				)}
 			/>
 

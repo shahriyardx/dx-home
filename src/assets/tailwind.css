@@ -160,6 +160,37 @@
 	animation: fade 250ms var(--ease-expressive) backwards;
 }
 
+@keyframes pop {
+	from {
+		opacity: 0;
+		transform: translateY(8px) scale(0.98);
+	}
+}
+
+/* Something new arriving in place: a task, a chip, a swapped view. */
+@utility pop-in {
+	animation: pop 320ms var(--ease-expressive) backwards;
+}
+
+/*
+ * Height to/from auto without measuring: animate the grid row between 0fr and
+ * 1fr. The single child needs `min-h-0 overflow-hidden`. Add `expanded`
+ * to show; `inert` the closed one so its controls are not tabbable.
+ */
+@utility collapsible {
+	display: grid;
+	grid-template-rows: 0fr;
+	opacity: 0;
+	transition:
+		grid-template-rows 320ms var(--ease-expressive),
+		opacity 220ms var(--ease-expressive);
+}
+
+@utility expanded {
+	grid-template-rows: 1fr;
+	opacity: 1;
+}
+
 /* Staggers direct children. nth-child, not a prop, so sections hidden in
    settings close the gap instead of leaving a pause. */
 @utility rise-stagger {

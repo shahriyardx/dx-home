@@ -31,13 +31,6 @@ export function withTime(current: Date | undefined, hhmm: string, now: Date) {
 	)
 }
 
-/** "HH:MM" for <input type="time">. */
-export function toTimeValue(date: Date | undefined) {
-	if (!date) return ""
-	const pad = (n: number) => String(n).padStart(2, "0")
-	return `${pad(date.getHours())}:${pad(date.getMinutes())}`
-}
-
 export function addDays(date: Date, days: number) {
 	return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days)
 }

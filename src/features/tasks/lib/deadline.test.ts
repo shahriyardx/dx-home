@@ -1,11 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import {
-	addDays,
-	defaultTime,
-	toTimeValue,
-	withDate,
-	withTime,
-} from "./deadline"
+import { addDays, defaultTime, withDate, withTime } from "./deadline"
 
 const now = new Date(2026, 9, 16, 14, 25)
 
@@ -37,10 +31,6 @@ describe("deadline", () => {
 			new Date(2026, 9, 16, 8, 0),
 		)
 		expect(withTime(current, "", now)).toBe(current)
-	})
-
-	test("time value round-trips in local time", () => {
-		expect(toTimeValue(new Date(2026, 9, 16, 7, 5))).toBe("07:05")
 	})
 
 	test("addDays crosses month ends", () => {
