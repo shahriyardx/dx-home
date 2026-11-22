@@ -33,7 +33,8 @@ src/
 │   ├── recent-tabs/
 │   ├── search/                     # lib/calc, lib/actions, components/
 │   ├── settings/
-│   └── tasks/                      # tasks-context, schema, components/
+│   ├── tasks/                      # tasks-context, schema, components/
+│   └── weather/                    # IP location + forecast, once a day each
 └── shared/
     ├── components/                 # favicon, link-card, error-boundary, section-header
     ├── hooks/                      # use-is-mobile
@@ -60,7 +61,7 @@ await item.get() / item.set(v) / item.watch(cb)            // anywhere else
 
 | Area | Lifetime | Holds |
 | --- | --- | --- |
-| `local` | this profile | `dx-newtab-settings`, `dx-background`, `dx-background-custom`, `dx-main-layout`, `dx-right-panel-section` |
+| `local` | this profile | `dx-newtab-settings`, `dx-background`, `dx-background-custom`, `dx-main-layout`, `dx-right-panel-section`, `dx-weather` |
 | `sync` | across devices, **8KB per item** | `dx-tasks` |
 | `session` | until the worker dies | `dx-open-tabs` |
 | Dexie | this profile, unbounded | `bookmarks`, `recenttabs`, `readinglist` |
@@ -102,6 +103,11 @@ in this category.
 7. **`react-day-picker` v10 renamed `table` → `month_grid`.** An unknown key in
    `classNames` fails silently — the styles just never apply.
 8. **Match patterns ignore ports**, so `http://localhost/*` covers every port.
+9. **Weather calls outside services** with no host permission: GeoJS (IP →
+   city) and Open-Meteo (forecast). Both send `Access-Control-Allow-Origin: *`.
+   Each is called at most once a day; the page picks the current hour from
+   the cached hourly forecast. ipapi.co was tried and returns a Cloudflare
+   challenge instead of JSON.
 
 ---
 

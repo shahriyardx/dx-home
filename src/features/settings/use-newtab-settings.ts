@@ -3,6 +3,7 @@ import { defineStorageItem, useStorageItem } from "@/shared/storage"
 
 export interface NewtabSettings {
 	showClock: boolean
+	clock24h: boolean
 	showSearch: boolean
 	showBookmarks: boolean
 	showRecentTabs: boolean
@@ -13,6 +14,7 @@ export interface NewtabSettings {
 
 const DEFAULTS: NewtabSettings = {
 	showClock: true,
+	clock24h: false,
 	showSearch: true,
 	showBookmarks: true,
 	showRecentTabs: true,

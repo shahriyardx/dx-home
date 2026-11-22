@@ -1,7 +1,10 @@
+import { useNewtabSettings } from "@/features/settings"
+import { Weather } from "@/features/weather"
 import { cn } from "@/shared/lib/utils"
 import { useState, useEffect } from "react"
 
 const Clock = () => {
+	const { settings } = useNewtabSettings()
 	const [clockOnly, setClockOnly] = useState(false)
 	const [now, setNow] = useState(new Date())
 
@@ -11,18 +14,21 @@ const Clock = () => {
 	}, [])
 
 	const h = now.getHours()
-	const h12 = h % 12 || 12
+	// Always two digits: "01" sits as one block with the minutes, and the width
+	// never shifts when the hour crosses 9 to 10.
+	const hours = String(settings.clock24h ? h : h % 12 || 12).padStart(2, "0")
 	const mm = String(now.getMinutes()).padStart(2, "0")
 	const ampm = h >= 12 ? "PM" : "AM"
-
-	const hours = clockOnly ? String(h12).padStart(2, "0") : String(h12)
 	const ss = String(now.getSeconds()).padStart(2, "0")
 
-	// Thin and lifted: a bold colon at this size reads as two holes punched in
-	// the numbers, and Roboto's sits a little low against lining digits.
+	// Drawn, not typed: Roboto's colon is either too thin to hold its own next to
+	// the digits or, when bold, two round holes. Two squares in the accent, sized
+	// in em so they scale with the clock in focus mode too.
 	const colon = (
-		<span className="-mx-[0.01em] inline-block -translate-y-[0.06em] font-light text-white/70">
-			:
+		<span className="mx-[0.11em] inline-flex translate-y-[0.03em] flex-col gap-[0.23em] self-center">
+			<span className="sr-only">:</span>
+			<i className="size-[0.13em] rounded-[0.03em] bg-primary" />
+			<i className="size-[0.13em] rounded-[0.03em] bg-primary" />
 		</span>
 	)
 
@@ -57,25 +63,29 @@ const Clock = () => {
 						{colon}
 						<span className="text-white/85">{ss}</span>
 					</>
-				) : (
-					<span className="ms-4 text-2xl font-semibold tracking-normal text-white/85 lg:text-3xl">
-						{ampm}
-					</span>
+				) : settings.clock24h ? null : (
+					// Full size so the line reads as one block; dimmed so the time still
+					// leads. Below the white/70 wallpaper floor on purpose: at this size it
+					// stays readable, and the hours and minutes carry the information.
+					<span className="ms-[0.15em] text-white/40">{ampm}</span>
 				)}
 			</h1>
 
-			<p
+			<div
 				className={cn(
-					"on-wallpaper mt-4 text-lg font-semibold text-white",
-					clockOnly && "mt-6 text-xl",
+					"on-wallpaper mt-4 flex items-center gap-3.5 text-xl font-semibold text-white",
+					clockOnly && "mt-8 justify-center",
 				)}
 			>
-				{now.toLocaleDateString(undefined, {
-					weekday: "long",
-					month: "long",
-					day: "numeric",
-				})}
-			</p>
+				<p>
+					{now.toLocaleDateString(undefined, {
+						weekday: "long",
+						month: "long",
+						day: "numeric",
+					})}
+				</p>
+				<Weather />
+			</div>
 		</button>
 	)
 }

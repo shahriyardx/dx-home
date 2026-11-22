@@ -8,6 +8,7 @@ import {
 	requestLocalhostAccess,
 	revokeLocalhostAccess,
 } from "@/features/dev-servers"
+import { WeatherSetting } from "@/features/weather"
 import { Switch } from "@/shared/ui/switch"
 
 type Section = {
@@ -18,6 +19,7 @@ type Section = {
 
 const SECTIONS: Section[] = [
 	{ key: "showClock", label: "Clock" },
+	{ key: "clock24h", label: "24-hour clock" },
 	{ key: "showSearch", label: "Search" },
 	{ key: "showBookmarks", label: "Bookmarks" },
 	{ key: "showRecentTabs", label: "Recent tabs" },
@@ -107,6 +109,7 @@ export function SettingsView() {
 					</label>
 				)
 			})}
+			<WeatherSetting />
 		</div>
 	)
 }
