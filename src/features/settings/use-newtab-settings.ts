@@ -10,6 +10,7 @@ export interface NewtabSettings {
 	showRightPanel: boolean
 	showReadingList: boolean
 	showDevServers: boolean
+	fahrenheit: boolean
 }
 
 const DEFAULTS: NewtabSettings = {
@@ -24,6 +25,7 @@ const DEFAULTS: NewtabSettings = {
 	// the section renders nothing at all without it, so this costs a user who
 	// never runs a dev server exactly nothing.
 	showDevServers: true,
+	fahrenheit: false,
 }
 
 export const newtabSettings = defineStorageItem<

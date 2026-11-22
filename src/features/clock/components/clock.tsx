@@ -84,7 +84,7 @@ const Clock = () => {
 						day: "numeric",
 					})}
 				</p>
-				<Weather />
+				<Weather fahrenheit={settings.fahrenheit} />
 			</div>
 		</button>
 	)

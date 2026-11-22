@@ -31,6 +31,8 @@ const SECTIONS: Section[] = [
 		label: "Dev servers",
 		desc: "Finds servers on localhost",
 	},
+	// Last, so it sits directly above the weather city field.
+	{ key: "fahrenheit", label: "Fahrenheit" },
 ]
 
 export function SettingsView() {

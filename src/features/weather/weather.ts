@@ -104,7 +104,8 @@ export async function fetchForecast(place: Place): Promise<Forecast> {
 		fetchedOn: today(),
 		hours: hourly.time.map((t: number, i: number) => ({
 			t,
-			temp: Math.round(hourly.temperature_2m[i]),
+			// Raw °C; rounded at display so °F is not rounded twice.
+			temp: hourly.temperature_2m[i],
 			code: hourly.weather_code[i],
 			isDay: hourly.is_day[i] === 1,
 		})),
