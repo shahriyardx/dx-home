@@ -74,7 +74,10 @@ add a new one. `db.test.ts` exercises the upgrade against a populated v4.
 
 ## Permissions
 
-Required: `topSites`, `tabs`, `storage`, `sidePanel`, `contextMenus`, `search`.
+Required: `topSites`, `tabs`, `storage`, `sidePanel`, `contextMenus`, `search`,
+and on Chrome only `favicon` (no install warning). It lets `shared/components/favicon.tsx`
+read icons from Chrome's own on-disk store via `_favicon/` instead of the network;
+Firefox and never-visited sites fall back to fetching.
 
 Localhost (`http://localhost/*`, `http://127.0.0.1/*`) is an **optional** host
 permission for dev server discovery, requested from a user gesture in settings.
